@@ -1,0 +1,9 @@
+{
+    "name": "miguel/news-website",
+    "autoload": {
+        "psr-4": {
+            "Miguel\\NewsWebsite\\": "lib/"
+        }
+    },
+    "require": {}
+}
