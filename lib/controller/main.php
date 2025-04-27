@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 class Application
 {
-    private function render(string $viewName) {}
+    private function render(string $viewName, array $data)
+    {
+        $data['viewPath'] = VIEWS . $viewName . ".php";
+        extract($data);
+        require_once VIEWS . "layout.php";
+    }
 
     public function index(): void
     {
-        require VIEWS . "home.php";
+        $this->render("home", ["foo" => "bar"]);
     }
 
     public function pageNotFound(): void
     {
-        require VIEWS . "404.php";
+        $this->render("404", []);
     }
 }
