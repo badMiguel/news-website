@@ -16,6 +16,6 @@ require_once CONTROLLER . "main.php";
 require_once MODEL . "db.php";
 
 $model = new Model();
-$app = new Application($model->db);
+$app = new Application($model);
 $router = new Router($app);
 $router->dispatch($path);

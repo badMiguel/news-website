@@ -11,9 +11,35 @@ class Model
             $this->db = new PDO("sqlite:$dbPath");
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $err) {
-            // TODO err message
-            echo "FAILED TO CONNECT TO DATABASE<br>" . $err->getMessage() . "<br>";
+            error_log("Database connection failed: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
             exit();
         }
+    }
+
+    private function getAuthorName(int $authorId): string | null
+    {
+        $statement = $this->db->prepare("
+            SELECT user_name FROM user
+            WHERE user_id = :authorId 
+        ");
+
+        $statement->execute(["authorId" => $authorId]);
+        $result = $statement->fetch();
+        return $result ? $result["user_name"] : null;
+    }
+
+    public function getAllNews(): array
+    {
+        $statement = $this->db->query("SELECT * FROM news");
+        $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+        foreach ($newsList as $key => $val) {
+            $newsList[$key]["author"] = $this->getAuthorName($val["author_id"]);
+        }
+
+        return $newsList;
     }
 }

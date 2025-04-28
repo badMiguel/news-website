@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 class Application
 {
-    protected PDO $db;
+    private Model $model;
 
-    public function __construct(PDO $db)
+    public function __construct(Model $model)
     {
-        $this->db = $db;
+        $this->model = $model;
     }
 
     /**
@@ -27,7 +27,11 @@ class Application
 
     public function index(): void
     {
-        $this->render("home", ["foo" => "bar"]);
+        $newsList = $this->model->getAllNews();
+        $data = [
+            "newsList" => $newsList,
+        ];
+        $this->render("home", $data);
     }
 
     public function pageNotFound(): void

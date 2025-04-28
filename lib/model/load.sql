@@ -4,9 +4,9 @@ INSERT INTO user (user_name, hashed_password, salt, privilege) VALUES ('bob', 'h
 INSERT INTO user (user_name, hashed_password, salt, privilege) VALUES ('charlie', 'hashed_pw3', 'salt3', 0);
 
 -- Insert data into the news table
-INSERT INTO news (news_title, body, author_id) VALUES ('First News', 'This is the body of the first news.', 1);
-INSERT INTO news (news_title, body, author_id) VALUES ('Second News', 'This is the body of the second news.', 2);
-INSERT INTO news (news_title, body, author_id) VALUES ('Third News', 'This is the body of the third news.', 1);
+INSERT INTO news (news_title, news_summary, body, author_id) VALUES ('First News', 'This is First News', 'This is the body of the first news.', 1);
+INSERT INTO news (news_title, news_summary, body, author_id) VALUES ('Second News', 'This is Second News', 'This is the body of the second news.', 2);
+INSERT INTO news (news_title, news_summary, body, author_id) VALUES ('Third News', 'This is Third News', 'This is the body of the third news.', 1);
 
 -- Insert data into the comment table
 INSERT INTO comment (comment, commentor, news_id) VALUES ('Great article!', 2, 1);
