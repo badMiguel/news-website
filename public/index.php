@@ -13,9 +13,11 @@ if (isset($_SERVER["PATH_INFO"])) {
 
 require_once CONTROLLER . "router.php";
 require_once CONTROLLER . "main.php";
+require_once CONTROLLER . "paginator.php";
 require_once MODEL . "db.php";
 
 $model = new Model();
-$app = new Application($model);
+$paginator = new Paginator();
+$app = new Application($model, $paginator);
 $router = new Router($app);
 $router->dispatch($path);

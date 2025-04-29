@@ -5,10 +5,12 @@ declare(strict_types=1);
 class Application
 {
     private Model $model;
+    private Paginator $paginator;
 
-    public function __construct(Model $model)
+    public function __construct(Model $model, Paginator $paginator)
     {
         $this->model = $model;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -25,11 +27,14 @@ class Application
         require_once VIEWS . "layout.php";
     }
 
+
     public function index(): void
     {
         $newsList = $this->model->getAllNews();
+        $currNewsList = $this->paginator->start($newsList);
+
         $data = [
-            "newsList" => $newsList,
+            "currNewsList" => $currNewsList,
         ];
         $this->render("home", $data);
     }
