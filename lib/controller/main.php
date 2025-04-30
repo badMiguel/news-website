@@ -217,6 +217,11 @@ class Application
         header("Location: /");
         exit();
     }
+
+    public function addComment(): void
+    {
+
+        
     public function pageNotFound(): void
     {
         $this->render("404", []);
