@@ -40,13 +40,23 @@ class Application
 
         $totalPages = $this->paginator->getTotalPages();
 
-        if (isset($_GET["page"])) {
+        if (isset($_GET["page"]) || isset($_GET["display"])) {
+            if (isset($_GET["display"])) {
+                $this->paginator->changeAmountToDisplay((int) $_GET["display"]);
+                $totalPages = $this->paginator->getTotalPages();
+
+                if ($this->paginator->currentPage > $totalPages) {
+                    $this->paginator->currentPage = $totalPages;
+                }
+            }
+
+            $page = $this->paginator->currentPage;
             if ($_GET["page"] > $totalPages) {
-                $this->currNewsList = $this->paginator->skipToPage($this->paginator->currentPage);
             } else {
                 $page = (int) $_GET["page"];
-                $this->currNewsList = $this->paginator->skipToPage($page);
             }
+
+            $this->currNewsList = $this->paginator->skipToPage($page);
         }
 
         $pageInfo = $this->paginator->getPageRange();
@@ -62,9 +72,57 @@ class Application
         $this->render("home", $data);
     }
 
+    public function news(): void
+    {
+        $newsDetails = $this->model->getNewsDetails((int) $_GET["id"]);
+
+        $data = [
+            "newsDetails" => $newsDetails,
+        ];
+
+        $this->render("news_details", $data);
+    }
+
+    public function createNews(): void
+    {
+        $data = [
+            "title" => "Create News"
+        ];
+        $this->render("create_news", $data);
+    }
+
+    public function createNewsSubmit(): void
+    {
+        if (
+            !isset($_POST["news_title"]) || $_POST["news_title"] === "" ||
+            !isset($_POST["news_summary"]) || $_POST["news_summary"] === "" ||
+            !isset($_POST["body"]) || $_POST["body"] === ""
+        ) {
+            session_start();
+            $_SESSION["newsCreateStatus"] = false;
+            session_write_close();
+
+            header("Location: /news/create");
+            exit();
+        }
+
+        $this->model->addNewsToDB();
+
+        session_start();
+        $_SESSION["newsCreateStatus"] = true;
+        session_write_close();
+
+        header("Location: /news/create");
+        exit();
+    }
+
+    public function login(): void
+    {
+        $this->render("login", []);
+    }
+
     public function pageNotFound(): void
     {
         $this->render("404", []);
     }
 }
-

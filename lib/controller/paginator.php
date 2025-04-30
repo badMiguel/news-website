@@ -77,12 +77,6 @@ class Paginator
         return [$pageStart ?? 0, $pageEnd ?? 0];
     }
 
-    public function changeAmountToDisplay(int $value)
-    {
-        $this->amountToDisplay = $value;
-        // TODO re-render home 
-    }
-
     public function skipToPage(int $currentPage): array
     {
         session_start();
@@ -93,5 +87,14 @@ class Paginator
 
         $currIdx = ($this->currentPage - 1) * $this->amountToDisplay;
         return array_slice($this->newsList, $currIdx, $this->amountToDisplay);
+    }
+
+    public function changeAmountToDisplay(int $value)
+    {
+        session_start();
+        $_SESSION["amountToDisplay"] = $value;
+        session_write_close();
+
+        $this->amountToDisplay = $value;
     }
 }
