@@ -73,6 +73,10 @@ class Model
     public function addNewsToDB(): void
     {
         try {
+            session_start();
+            $authorId = $_SESSION['user_id'];
+            session_write_close();
+
             $statement = $this->db->prepare("
             ");
             $statement->execute([]);
@@ -83,4 +87,27 @@ class Model
             exit();
         }
     }
+
+    public function updateNewsInDB(int $newsId): void
+    {
+        try {
+            $statement = $this->db->prepare("
+                UPDATE news 
+                SET news_title = :title, news_summary = :summary, body = :body, edited_date = CURRENT_TIMESTAMP
+                WHERE news_id = :newsId
+            ");
+            $statement->execute([
+                "title" => $_POST["news_title"],
+                "summary" => $_POST["news_summary"],
+                "body" => $_POST["body"],
+                "newsId" => $newsId,
+            ]);
+        } catch (PDOException $err) {
+            error_log("Error updating news in DB: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. News was not updated. Please try again later.";
+            exit();
+        }
+    }
+
 }
