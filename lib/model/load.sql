@@ -4,6 +4,9 @@ VALUES
     ('alice', 'hashed_pw1', 'salt1', 1),
     ('bob', 'hashed_pw2', 'salt2', 0),
     ('charlie', 'hashed_pw3', 'salt3', 0);
+    ('editor1', 'hashed_pw4', 'salt4', 2),
+    ('journalist1', 'hashed_pw5', 'salt5', 1),
+    ('user1', 'hashed_pw6', 'salt6', 0); 
 
 -- Insert data into the news table
 INSERT INTO news (news_title, news_summary, body, author_id)

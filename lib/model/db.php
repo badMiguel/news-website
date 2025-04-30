@@ -42,4 +42,11 @@ class Model
 
         return $newsList;
     }
+
+    public function getUserByUsername(string $username): ?array
+    {
+        $statement = $this->db->prepare("SELECT * FROM user WHERE user_name = :username");
+        $statement->execute(["username" => $username]);
+        return $statement->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 }
