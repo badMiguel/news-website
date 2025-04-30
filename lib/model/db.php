@@ -78,6 +78,8 @@ class Model
             session_write_close();
 
             $statement = $this->db->prepare("
+                INSERT INTO news (news_title, news_summary, body, author_id, created_date, edited_date)
+                VALUES (:title, :summary, :body, :authorId, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             ");
             $statement->execute([]);
         } catch (PDOException $err) {
