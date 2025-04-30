@@ -134,4 +134,17 @@ class Model
         $statement->execute(["newsId" => $newsId]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function addCommentToDB(int $newsId, int $commentorId, string $comment): void
+    {
+        $statement = $this->db->prepare("
+            INSERT INTO comment (comment, commentor, news_id)
+            VALUES (:comment, :commentor, :newsId)
+        ");
+        $statement->execute([
+            "comment" => $comment,
+            "commentor" => $commentorId,
+            "newsId" => $newsId,
+        ]);
+    }
 }
