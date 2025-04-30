@@ -96,23 +96,26 @@ class Application
     public function createNewsSubmit(): void
     {
         $this->checkPrivilege(2);
+
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            $_SESSION["newsCreateStatus"] = false;
+            $_SESSION["newsCreateError"] = "Invalid CSRF token.";
+            header("Location: /news/create");
+            exit();
+        }
+
         if (
             !isset($_POST["news_title"]) || $_POST["news_title"] === "" ||
             !isset($_POST["news_summary"]) || $_POST["news_summary"] === "" ||
             !isset($_POST["body"]) || $_POST["body"] === ""
         ) {
-            session_start();
             $_SESSION["newsCreateStatus"] = false;
-            session_write_close();
-
             header("Location: /news/create");
             exit();
         }
 
-        session_start();
         if (!isset($_SESSION['user_id'])) {
             $_SESSION["newsCreateStatus"] = false;
-            session_write_close();
             header("Location: /news/create");
             exit();
         }
@@ -121,15 +124,11 @@ class Application
             $this->model->addNewsToDB();
 
             $_SESSION["newsCreateStatus"] = true;
-            session_write_close();
-
             header("Location: /news/create");
             exit();
         } catch (Exception $e) {
             $_SESSION["newsCreateStatus"] = false;
             $_SESSION["newsCreateError"] = $e->getMessage();
-            session_write_close();
-
             header("Location: /news/create");
             exit();
         }
