@@ -110,4 +110,18 @@ class Model
         }
     }
 
+    public function deleteNewsFromDB(int $newsId): void
+    {
+        try {
+            $statement = $this->db->prepare("DELETE FROM news WHERE news_id = :newsId");
+            $statement->execute(["newsId" => $newsId]);
+        } catch (PDOException $err) {
+            error_log("Error deleting news from DB: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. News was not deleted. Please try again later.";
+            exit();
+        }
+    }
+
+
 }
