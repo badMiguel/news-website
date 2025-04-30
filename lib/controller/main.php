@@ -118,9 +118,50 @@ class Application
 
     public function login(): void
     {
-        $this->render("login", []);
+
+        session_start();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+            $password = $_POST['password'];
+
+
+            $user = $this->model->getUserByUsername($username);
+            if ($user && password_verify($password . $user['salt'], $user['hashed_password'])) {
+                // login
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['user_name'];
+                $_SESSION['privilege'] = $user['privilege'];
+                header('Location: /');
+                exit;
+            } else {
+                // fail login
+                $error = "Invalid username or password";
+                $this->render("login", ['error' => $error]);
+            }
+        } else {
+  
+            $this->render("login", []);
+        }
+
     }
 
+    public function logout(): void
+    {
+        session_start();
+        session_destroy();
+        header('Location: /');
+        exit;
+    }
+
+    public function checkPrivilege(int $requiredPrivilege): void
+    {
+        session_start();
+        if (!isset($_SESSION['privilege']) || $_SESSION['privilege'] < $requiredPrivilege) {
+            header('Location: /login');
+            exit;
+        }
+    }
     public function pageNotFound(): void
     {
         $this->render("404", []);
