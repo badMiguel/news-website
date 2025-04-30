@@ -40,13 +40,18 @@ class Application
 
         $totalPages = $this->paginator->getTotalPages();
 
-        if (isset($_GET["page"])) {
+        if (isset($_GET["page"]) || isset($_GET["display"])) {
+            if (isset($_GET["display"])) {
+                $this->paginator->changeAmountToDisplay((int) $_GET["display"]);
+            }
+
+            $page = $this->paginator->currentPage;
             if ($_GET["page"] > $totalPages) {
-                $this->currNewsList = $this->paginator->skipToPage($this->paginator->currentPage);
             } else {
                 $page = (int) $_GET["page"];
-                $this->currNewsList = $this->paginator->skipToPage($page);
             }
+
+            $this->currNewsList = $this->paginator->skipToPage($page);
         }
 
         $pageInfo = $this->paginator->getPageRange();

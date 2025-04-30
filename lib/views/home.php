@@ -13,3 +13,4 @@
     <hr>
 <?php endforeach ?>
 <?php require VIEWS . "page_number.php" ?>
+<?php require VIEWS . "news_amount.php" ?>
