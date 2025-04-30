@@ -220,8 +220,28 @@ class Application
 
     public function addComment(): void
     {
+        session_start();
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
 
-        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $newsId = (int) $_POST['news_id'];
+            $comment = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING);
+
+            if ($comment === null || $comment === "") {
+                header("Location: /news?id=" . $newsId);
+                exit;
+            }
+
+            $this->model->addCommentToDB($newsId, $_SESSION['user_id'], $comment);
+        }
+
+        header("Location: /news?id=" . $newsId);
+        exit;
+    }
+
     public function pageNotFound(): void
     {
         $this->render("404", []);
