@@ -43,6 +43,11 @@ class Application
         if (isset($_GET["page"]) || isset($_GET["display"])) {
             if (isset($_GET["display"])) {
                 $this->paginator->changeAmountToDisplay((int) $_GET["display"]);
+                $totalPages = $this->paginator->getTotalPages();
+
+                if ($this->paginator->currentPage > $totalPages) {
+                    $this->paginator->currentPage = $totalPages;
+                }
             }
 
             $page = $this->paginator->currentPage;
@@ -72,4 +77,3 @@ class Application
         $this->render("404", []);
     }
 }
-

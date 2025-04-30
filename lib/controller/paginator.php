@@ -95,8 +95,6 @@ class Paginator
         $_SESSION["amountToDisplay"] = $value;
         session_write_close();
 
-        echo $value;
-
         $this->amountToDisplay = $value;
     }
 }
