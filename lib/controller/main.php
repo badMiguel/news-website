@@ -83,6 +83,11 @@ class Application
         $this->render("news_details", $data);
     }
 
+    public function login(): void
+    {
+        $this->render("login", []);
+    }
+
     public function pageNotFound(): void
     {
         $this->render("404", []);

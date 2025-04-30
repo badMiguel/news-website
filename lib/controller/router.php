@@ -25,6 +25,7 @@ class Router
         $this->routes = [
             "/" => [$this->app, "index"],
             "/news" => [$this->app, "news"],
+            "/login" => [$this->app, "login"],
         ];
     }
 
