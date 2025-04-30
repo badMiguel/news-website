@@ -109,14 +109,30 @@ class Application
             exit();
         }
 
-        $this->model->addNewsToDB();
-
         session_start();
-        $_SESSION["newsCreateStatus"] = true;
-        session_write_close();
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION["newsCreateStatus"] = false;
+            session_write_close();
+            header("Location: /news/create");
+            exit();
+        }
 
-        header("Location: /news/create");
-        exit();
+        try {
+            $this->model->addNewsToDB();
+
+            $_SESSION["newsCreateStatus"] = true;
+            session_write_close();
+
+            header("Location: /news/create");
+            exit();
+        } catch (Exception $e) {
+            $_SESSION["newsCreateStatus"] = false;
+            $_SESSION["newsCreateError"] = $e->getMessage();
+            session_write_close();
+
+            header("Location: /news/create");
+            exit();
+        }
     }
 
     public function login(): void
@@ -126,8 +142,14 @@ class Application
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-            $password = $_POST['password'];
+            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
 
+
+            if ($username === null || $password === null) {
+                $error = "Username and password are required.";
+                $this->render("login", ['error' => $error]);
+                return;
+            }
 
             $user = $this->model->getUserByUsername($username);
             if ($user && password_verify($password . $user['salt'], $user['hashed_password'])) {
@@ -242,7 +264,7 @@ class Application
         exit;
     }
 
-    public function pageNotFound(): void
+     public function pageNotFound(): void
     {
         $this->render("404", []);
     }

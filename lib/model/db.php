@@ -73,9 +73,7 @@ class Model
     public function addNewsToDB(): void
     {
         try {
-            session_start();
             $authorId = $_SESSION['user_id'];
-            session_write_close();
 
             $statement = $this->db->prepare("
                 INSERT INTO news (news_title, news_summary, body, author_id, created_date, edited_date)
