@@ -138,7 +138,6 @@ class Application
             exit();
         }
 
-        session_start();
         try {
 
             $newsTitle = $_POST["news_title"];
@@ -151,22 +150,25 @@ class Application
                 newsBody: $newsBody
             );
 
+            session_start();
             $_SESSION["newsCreateStatus"] = true;
+            session_write_close();
+
             header("Location: /news/create");
             exit();
         } catch (Exception $e) {
+            session_start();
             $_SESSION["newsCreateStatus"] = false;
             $_SESSION["newsCreateError"] = $e->getMessage();
+            session_write_close();
+
             header("Location: /news/create");
             exit();
         }
-        session_write_close();
     }
 
     public function login(): void
     {
-
-        session_start();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
@@ -182,9 +184,12 @@ class Application
             $user = $this->model->getUserByUsername($username);
             if ($user && password_verify($password . $user['salt'], $user['hashed_password'])) {
                 // login
+                session_start();
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['username'] = $user['user_name'];
                 $_SESSION['privilege'] = $user['privilege'];
+                session_write_close();
+
                 header('Location: /');
                 exit;
             } else {
@@ -193,7 +198,6 @@ class Application
                 $this->render("login", ['error' => $error]);
             }
         } else {
-
             $this->render("login", []);
         }
     }
@@ -210,9 +214,11 @@ class Application
     {
         session_start();
         if (!isset($_SESSION['privilege']) || $_SESSION['privilege'] < $requiredPrivilege) {
+            // session_write_close();
             header('Location: /login');
             exit;
         }
+        session_write_close();
     }
 
     public function editNews(): void
@@ -289,6 +295,7 @@ class Application
 
         header("Location: /news?id=" . $newsId);
         exit;
+        session_write_close();
     }
 
     public function pageNotFound(): void

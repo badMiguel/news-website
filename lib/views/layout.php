@@ -13,12 +13,15 @@
         <h1>Austro-Asian Times</h1>
         <nav>
             <a href="/">Home</a>
-            <?php session_start(); ?>
-            <?php if (isset($_SESSION['username'])): ?>
-                <a href="/logout">Logout</a>
-            <?php else: ?>
-                <a href="/login">Login</a>
-            <?php endif; ?>
+            <?php
+            session_start();
+            if (isset($_SESSION['username'])) {
+                echo "<a href='/logout'>Logout</a>";
+            } else {
+                echo "<a href='/login'>Login</a>";
+            }
+            session_write_close();
+            ?>
         </nav>
         <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
     </header>
