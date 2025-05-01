@@ -16,8 +16,8 @@ session_write_close();
     <label for="news_title">News Title:</label>
     <input type="text" name="news_title" id="news_title" />
 
-    <label for="news_summary">News Summary:</label>
-    <input type="text" name="news_summary" id="news_summary" />
+    <label for="news_subtitle">News Subtitle:</label>
+    <input type="text" name="news_subtitle" id="news_subtitle" />
 
     <label for="body">News Body:</label>
     <textarea name="body" id="body"></textarea>

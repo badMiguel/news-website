@@ -1,5 +1,5 @@
 <h2><?php echo htmlspecialchars($newsDetails['news_title']); ?></h2>
-<p><strong>Summary:</strong> <?php echo htmlspecialchars($newsDetails['news_summary']); ?></p>
+<p><strong>Summary:</strong> <?php echo htmlspecialchars($newsDetails['news_subtitle']); ?></p>
 <p><strong>Body:</strong> <?php echo nl2br(htmlspecialchars($newsDetails['body'])); ?></p>
 <p><strong>Author:</strong> <?php echo htmlspecialchars($newsDetails['author'] ?? 'Unknown'); ?></p>
 <p><strong>Created:</strong> <?php echo htmlspecialchars($newsDetails['created_date']); ?></p>

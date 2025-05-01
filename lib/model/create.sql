@@ -14,7 +14,7 @@ CREATE TABLE user (
 CREATE TABLE news ( 
     news_id INTEGER PRIMARY KEY AUTOINCREMENT,
     news_title TEXT UNIQUE NOT NULL,
-    news_summary TEXT NOT NULL,
+    news_subtitle TEXT NOT NULL,
     body TEXT NOT NULL,
     author_id INTEGER,
     created_date DATETIME DEFAULT CURRENT_TIMESTAMP,

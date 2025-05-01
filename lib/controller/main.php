@@ -118,7 +118,7 @@ class Application
 
         if (
             !isset($_POST["news_title"]) || $_POST["news_title"] === "" ||
-            !isset($_POST["news_summary"]) || $_POST["news_summary"] === "" ||
+            !isset($_POST["news_subtitle"]) || $_POST["news_subtitle"] === "" ||
             !isset($_POST["body"]) || $_POST["body"] === ""
         ) {
             session_start();
@@ -142,7 +142,7 @@ class Application
         try {
 
             $newsTitle = $_POST["news_title"];
-            $newsSummary = $_POST["news_summary"];
+            $newsSummary = $_POST["news_subtitle"];
             $newsBody = $_POST["body"];
 
             $this->model->addNewsToDB(
@@ -235,7 +235,7 @@ class Application
         if (
             !isset($_POST["news_id"]) || $_POST["news_id"] === "" ||
             !isset($_POST["news_title"]) || $_POST["news_title"] === "" ||
-            !isset($_POST["news_summary"]) || $_POST["news_summary"] === "" ||
+            !isset($_POST["news_subtitle"]) || $_POST["news_subtitle"] === "" ||
             !isset($_POST["body"]) || $_POST["body"] === ""
         ) {
             session_start();
@@ -296,4 +296,3 @@ class Application
         $this->render("404", []);
     }
 }
-

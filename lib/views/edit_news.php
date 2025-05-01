@@ -11,7 +11,7 @@
 <form method="POST" action="/news/edit/submit">
     <input type="hidden" name="news_id" value="<?php echo htmlspecialchars($newsDetails['news_id']); ?>">
     <label>Title: <input type="text" name="news_title" value="<?php echo htmlspecialchars($newsDetails['news_title']); ?>" required></label><br>
-    <label>Summary: <textarea name="news_summary" required><?php echo htmlspecialchars($newsDetails['news_summary']); ?></textarea></label><br>
+    <label>Summary: <textarea name="news_subtitle" required><?php echo htmlspecialchars($newsDetails['news_subtitle']); ?></textarea></label><br>
     <label>Body: <textarea name="body" required><?php echo htmlspecialchars($newsDetails['body']); ?></textarea></label><br>
     <button type="submit">Update News</button>
 </form>
