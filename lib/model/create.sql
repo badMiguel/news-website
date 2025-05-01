@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS news;
 DROP TABLE IF EXISTS comment;
+DROP TABLE IF EXISTS category;
+DROP TABLE IF EXISTS news_category;
 
 CREATE TABLE user (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,4 +31,17 @@ CREATE TABLE comment (
     news_id INTEGER NOT NULL,
     FOREIGN KEY(commentor) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY(news_id) REFERENCES news(news_id) ON DELETE CASCADE
+);
+
+CREATE TABLE category (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE news_category (
+    news_id INTEGER,
+    category_id INTEGER,
+    PRIMARY KEY (news_id, category_id),
+    FOREIGN KEY (news_id) REFERENCES news(news_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE
 );
