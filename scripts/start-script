@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# for miguelaaaa
+
+cd $HOME/documents/code/news-website
+
+tmux_running=$(pgrep tmux)
+
+if [[ -z tmux_running ]] || !(tmux has-session -t "news-website" 2> /dev/null); then
+    tmux new-session -d -s news-website -n Vim
+fi
+
+tmux send-keys -t news-website:0 'vim .' C-m
+
+tmux new-window -t news-website:1 -n Server
+tmux send-keys -t news-website:1 'php -S 127.0.0.1:8080 -t public/' C-m
+
+tmux new-window -t news-website:2 -n DB
+tmux send-keys -t news-website:2 'cd lib/model && sqlite3 db.sqlite' C-m
+
+tmux new-window -t news-website:3 -n Terminal
+
+tmux select-window -t news-website:0
+tmux attach-session -t news-website
