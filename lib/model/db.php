@@ -18,16 +18,7 @@ class Model
         }
     }
 
-    private function getAuthorName(int $authorId): string | null
     {
-        $statement = $this->db->prepare("
-            SELECT user_name FROM user
-            WHERE user_id = :authorId 
-        ");
-
-        $statement->execute(["authorId" => $authorId]);
-        $result = $statement->fetch();
-        return $result ? $result["user_name"] : null;
     }
 
     // TODO
@@ -35,18 +26,13 @@ class Model
     public function getAllNews(): array
     {
         $statement = $this->db->query("
-            SELECT * FROM news
+            SELECT news.*,user.user_name
+            SELECT news.*,user.user_name AS author
+            FROM news
+            JOIN user ON news.author_id = user.user_id
             ORDER BY edited_date
         ");
         $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        // TODO
-        // - use join statement instead on the query
-        foreach ($newsList as $key => $val) {
-            if ($val["author_id"]) {
-                $newsList[$key]["author"] = $this->getAuthorName($val["author_id"]);
-            }
-        }
 
         return $newsList;
     }
@@ -61,7 +47,10 @@ class Model
     public function getNewsDetails(int $id): ?array
     {
         $statement = $this->db->prepare("
-            SELECT * FROM news 
+            SELECT news.*,user.user_name
+            SELECT news.*,user.user_name AS author
+            FROM news 
+            JOIN user ON news.author_id = user.user_id
             WHERE news_id = :news_id
         ");
         $statement->execute(["news_id" => $id]);
@@ -71,11 +60,6 @@ class Model
             return null;
         }
 
-        // TODO
-        // - use join statement instead on the query
-        if ($newsDetails["author_id"]) {
-            $newsDetails["author"] = $this->getAuthorName($newsDetails["author_id"]);
-        }
         return $newsDetails;
     }
 
