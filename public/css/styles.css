@@ -12,5 +12,25 @@ body {
 }
 
 h1, h2, h3, nav {
-    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.top--container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 100px;
+}
+
+.nav--container {
+    width: 80%;
+    max-width: 900px;
+    justify-self: center;
+    justify-items: space-between;
+}
+
+.nav--list {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-around;
 }

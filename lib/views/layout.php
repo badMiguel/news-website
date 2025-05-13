@@ -13,24 +13,32 @@
 
 <body>
     <header>
-        <h1>Austro-Asian Times</h1>
-        <nav>
-            <a href="/">Home</a>
-            <?php
-            session_start();
-            if (isset($_SESSION['username'])) {
-                echo "<a href='/logout'>Logout</a>";
-            } else {
-                echo "<a href='/login'>Login</a>";
-            }
-            session_write_close();
-            ?>
+        <div class="top--container">
+            <div></div>
+            <h1 class="website-title">Austro-Asian Times</h1>
+            <div>
+                <p><a href="/news/create">create news</a></p>
+                <?php
+                session_start();
+                if (isset($_SESSION['username'])) {
+                    echo "<p><a href='/logout'>Logout</a></p>";
+                } else {
+                    echo "<p><a href='/login'>Login</a></p>";
+                }
+                session_write_close();
+                ?>
+            </div>
+        </div>
+        <nav class="nav--container">
+            <ul class="nav--list">
+                <li><a href="/">News</a></li>
+                <li><a href="/">Sports</a></li>
+                <li><a href="/">Business</a></li>
+                <li><a href="/">Travel</a></li>
+                <li><a href="/">Culture</a></li>
+            </ul>
         </nav>
-        <?php session_start(); ?>
-        <?php if (isset($_SESSION['username'])): ?>
-            <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
-        <?php endif ?>
-        <?php session_write_close(); ?>
+
     </header>
     <main>
         <?php require_once $viewPath; ?>

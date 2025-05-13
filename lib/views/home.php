@@ -1,5 +1,9 @@
-<h1>this is home</h1>
-<h3><a href="/news/create">create news</a></h3>
+<?php session_start(); ?>
+<?php if (isset($_SESSION['username'])): ?>
+    <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+<?php endif ?>
+<?php session_write_close(); ?>
+
 <?php foreach ($currNewsList as $news): ?>
     <div class='news-card'>
         <h2><a href="/news?id=<?= $news["news_id"] ?>"><?= $news["news_title"] ?></a></h2>
