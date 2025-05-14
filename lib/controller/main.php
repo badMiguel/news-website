@@ -50,8 +50,7 @@ class Application
             }
 
             $page = $this->paginator->currentPage;
-            if ($_GET["page"] > $totalPages) {
-            } else {
+            if (isset($_GET["page"]) && $_GET["page"] < $totalPages) {
                 $page = (int) $_GET["page"];
             }
 
@@ -306,4 +305,3 @@ class Application
         $this->render("404", []);
     }
 }
-
