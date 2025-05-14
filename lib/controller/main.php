@@ -37,6 +37,7 @@ class Application
         session_write_close();
 
         $totalPages = $this->paginator->getTotalPages();
+        $startCount = 1;
 
         if (isset($_GET["page"]) || isset($_GET["display"])) {
             if (isset($_GET["display"])) {
@@ -54,6 +55,10 @@ class Application
                 $page = (int) $_GET["page"];
             }
 
+            if ($page !== 1) {
+                $startCount = 0;
+            }
+
             $this->currNewsList = $this->paginator->skipToPage($page);
         }
         $pageInfo = $this->paginator->getPageRange();
@@ -64,6 +69,7 @@ class Application
             "totalPages" => $totalPages,
             "pageStart" => $pageInfo[0],
             "pageEnd" => $pageInfo[1],
+            "startCount" => $startCount,
         ];
 
         $this->render("home", $data);
@@ -300,3 +306,4 @@ class Application
         $this->render("404", []);
     }
 }
+

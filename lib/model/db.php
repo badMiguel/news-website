@@ -30,7 +30,7 @@ class Model
             SELECT news.*,user.user_name AS author
             FROM news
             JOIN user ON news.author_id = user.user_id
-            ORDER BY edited_date
+            ORDER BY edited_date DESC
             LIMIT :end OFFSET :start
         ");
         $statement->execute(["start" => $start, "end" => $end]);

@@ -3,28 +3,53 @@
     padding: 0;
 }
 
-.news-card {
-    margin: 20px 0;
+:root {
+    font-size: 18px;
+    --bg-primary: #;
+    --bg-secondary: #;
+    --bg-third: #;
+    --bg-fourth: #;
+    --font-primary: #;
+    --font-secondary: #;
 }
 
 body {
     font-family: "Merriweather", Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-h1, h2, h3, nav {
+h1,
+h2,
+h3,
+nav {
     font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .top--container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 30px 100px;
+    justify-content: center;
+    padding: 2rem 5rem;
+}
+
+.website-title {
+    flex: 3;
+    text-align: center;
+}
+
+.login--container {
+    display: flex;
+    gap: 1rem;
+    flex: 2;
+    justify-content: flex-end;
+}
+
+.logo--container {
+    flex: 2;
 }
 
 .nav--container {
     width: 80%;
-    max-width: 900px;
+    max-width: 45rem;
     justify-self: center;
     justify-items: space-between;
 }
@@ -33,4 +58,52 @@ h1, h2, h3, nav {
     list-style-type: none;
     display: flex;
     justify-content: space-around;
+}
+
+.main--container {
+    display: flex;
+    justify-content: center;
+    margin: 4rem 0;
+}
+
+.main--spacing {
+    width: 80%;
+    max-width: 45rem;
+}
+
+.top-news--container {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 3rem 0;
+}
+
+.top-news--title {
+    width: 35%;
+}
+
+.top-news--details {
+    width: 60%;
+}
+
+.news-card {
+    margin: 2.5rem 0;
+}
+
+.news-amount--container {
+    display: flex;
+    gap: 1rem;
+}
+
+.page-number--container {
+    display: flex;
+    justify-self: center;
+    gap: 1rem;
+}
+
+.page-number--next-prev {
+    text-align: center;
+}
+
+.page-number--number {
+    text-align: center;
 }

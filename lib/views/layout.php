@@ -14,14 +14,17 @@
 <body>
     <header>
         <div class="top--container">
-            <div></div>
+            <!-- logo container placeholder for now... can be replaced -->
+            <div class="logo--container"></div>
             <h1 class="website-title">Austro-Asian Times</h1>
-            <div>
-                <p><a href="/news/create">create news</a></p>
+            <div class="login--container">
                 <?php
                 session_start();
                 if (isset($_SESSION['username'])) {
-                    echo "<p><a href='/logout'>Logout</a></p>";
+                    echo "
+                        <p><a href='/news/create'>Create</a></p>
+                        <p><a href='/logout'>Logout</a></p>
+                    ";
                 } else {
                     echo "<p><a href='/login'>Login</a></p>";
                 }
@@ -31,6 +34,7 @@
         </div>
         <nav class="nav--container">
             <ul class="nav--list">
+                <li><a href="/">Home</a></li>
                 <li><a href="/">News</a></li>
                 <li><a href="/">Sports</a></li>
                 <li><a href="/">Business</a></li>
@@ -40,8 +44,10 @@
         </nav>
 
     </header>
-    <main>
-        <?php require_once $viewPath; ?>
+    <main class="main--container">
+        <div class="main--spacing">
+            <?php require_once $viewPath; ?>
+        </div>
     </main>
 </body>
 
