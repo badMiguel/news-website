@@ -96,12 +96,18 @@ class Model
         return $newsDetails;
     }
 
-    public function addNewsToDB(string $newsTitle, string $newsSummary, string $newsBody): void
-    {
+    public function addNewsToDB(
+        string $newsTitle,
+        string $newsSummary,
+        string $newsBody,
+        array $category
+    ): void {
         try {
             session_start();
             $authorId = $_SESSION['user_id'];
             session_write_close();
+
+            $this->db->beginTransaction();
 
             $statement = $this->db->prepare("
                 INSERT INTO news 
@@ -115,6 +121,10 @@ class Model
                 "body" => $newsBody,
                 "authorId" => $authorId,
             ]);
+
+            if (!$this->db->commit()) {
+                throw new Exception("Transaction failed while adding news");
+            }
         } catch (PDOException $err) {
             error_log("Error adding news to DB: " . $err->getMessage());
             header("HTTP/1.1 500 Internal Server Error");
@@ -181,5 +191,11 @@ class Model
             "commentor" => $commentorId,
             "newsId" => $newsId,
         ]);
+    }
+
+    public function getCategoryList(): array
+    {
+        $statement = $this->db->query("SELECT category FROM category");
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }

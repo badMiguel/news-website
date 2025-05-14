@@ -21,5 +21,16 @@ session_write_close();
     <label for="body">News Body:</label>
     <textarea name="body" id="body"></textarea>
 
+    <p>Category:</p>
+    <?php foreach ($categoryList as $c): ?>
+        <label>
+            <input
+                type="checkbox"
+                name="category[]"
+                value="<?= htmlspecialchars(lcfirst($c["category"])) ?>" />
+            <?= $c["category"] ?>
+        </label>
+    <?php endforeach ?>
+
     <button type="submit">Submit</button>
 </form>
