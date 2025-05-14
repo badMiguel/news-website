@@ -2,15 +2,15 @@
     <p>There are currently no news.</p>
 <?php elseif ($startCount === 1): ?>
     <div class="top-news--container">
-        <h1 class="top-news--title"><a href="/news?id=<?= $currNewsList[0]["news_id"] ?>"><?= $currNewsList[0]["news_title"] ?></a></h1>
+        <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($currNewsList[0]["news_id"]) ?>"><?= htmlspecialchars($currNewsList[0]["news_title"]) ?></a></h1>
         <div class="top-news--details">
-            <p><?= $currNewsList[0]["news_subtitle"] ?></p>
+            <p><?= htmlspecialchars($currNewsList[0]["news_subtitle"]) ?></p>
             <br>
             <?php if ($currNewsList[0]["author"]): ?>
-                <p>Author: <?= $currNewsList[0]["author"] ?></p>
+                <p>Author: <?= htmlspecialchars($currNewsList[0]["author"]) ?></p>
             <?php endif; ?>
-            <p>Created: <em><?= $currNewsList[0]["created_date"] ?></em></p>
-            <p>Edited: <em><?= $currNewsList[0]["edited_date"] ?></em></p>
+            <p>Created: <em><?= htmlspecialchars($currNewsList[0]["created_date"]) ?></em></p>
+            <p>Edited: <em><?= htmlspecialchars($currNewsList[0]["edited_date"]) ?></em></p>
         </div>
     </div>
 <?php endif ?>
@@ -20,14 +20,18 @@
 <?php if (count($currNewsList) > 1): ?>
     <?php for ($i = $startCount; $i < count($currNewsList); $i++): ?>
         <div class='news-card'>
-            <h2><a href="/news?id=<?= $currNewsList[$i]["news_id"] ?>"><?= $currNewsList[$i]["news_title"] ?></a></h2>
-            <p><?= $currNewsList[$i]["news_subtitle"] ?></p>
+            <h2>
+                <a href="/news?id=<?= htmlspecialchars($currNewsList[$i]["news_id"]) ?>">
+                    <?= htmlspecialchars($currNewsList[$i]["news_title"]) ?>
+                </a>
+            </h2>
+            <p><?= htmlspecialchars($currNewsList[$i]["news_subtitle"]) ?></p>
             <br>
             <?php if ($currNewsList[$i]["author"]): ?>
-                <p>Author: <?= $currNewsList[$i]["author"] ?></p>
+                <p>Author: <?= htmlspecialchars($currNewsList[$i]["author"]) ?></p>
             <?php endif; ?>
-            <p>Created: <em><?= $currNewsList[$i]["created_date"] ?></em></p>
-            <p>Edited: <em><?= $currNewsList[$i]["edited_date"] ?></em></p>
+            <p>Created: <em><?= htmlspecialchars($currNewsList[$i]["created_date"]) ?></em></p>
+            <p>Edited: <em><?= htmlspecialchars($currNewsList[$i]["edited_date"]) ?></em></p>
         </div>
         <hr>
     <?php endfor; ?>
