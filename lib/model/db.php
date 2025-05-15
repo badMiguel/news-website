@@ -20,7 +20,12 @@ class Model
 
     public function getTotalNewsCount(?string $category): int
     {
-        if ($category) {
+        try {
+            if (!$category) {
+                $statement = $this->db->query("SELECT COUNT(*) FROM news");
+                return $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
+            }
+
             $statement = $this->db->prepare("
                 SELECT COUNT(*)
                 FROM news n
@@ -31,93 +36,132 @@ class Model
             ");
             $statement->execute(["category" => $category]);
             return $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
+        } catch (PDOException $err) {
+            error_log("Error getting total news count: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
         }
-        $statement = $this->db->query("SELECT COUNT(*) FROM news");
-        return $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
     }
 
     private function getNewsCategory(array &$newsList): void
     {
-        for ($i = 0; $i < count($newsList); $i++) {
-            $statement = $this->db->prepare("
-                SELECT c.category
-                FROM category c
-                JOIN news_category nc ON nc.category_id = c.category_id
-                WHERE nc.news_id = :newsId
-            ");
-            $statement->execute(["newsId" => $newsList[$i]["news_id"]]);
-            $categoryList = $statement->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            for ($i = 0; $i < count($newsList); $i++) {
+                $statement = $this->db->prepare("
+                    SELECT c.category
+                    FROM category c
+                    JOIN news_category nc ON nc.category_id = c.category_id
+                    WHERE nc.news_id = :newsId
+                ");
+                $statement->execute(["newsId" => $newsList[$i]["news_id"]]);
+                $categoryList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $categories = [];
-            for ($j = 0; $j < count($categoryList); $j++) {
-                array_push($categories, $categoryList[$j]["category"]);
+                $categories = [];
+                for ($j = 0; $j < count($categoryList); $j++) {
+                    array_push($categories, $categoryList[$j]["category"]);
+                }
+                $newsList[$i]["category"] = $categories;
             }
-            $newsList[$i]["category"] = $categories;
+        } catch (PDOException $err) {
+            error_log("Error getting total news count: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
         }
     }
 
     public function getNewsList(int $start, int $end): array
     {
-        $statement = $this->db->prepare("
-            SELECT news.*,user.user_name AS author
-            FROM news
-            JOIN user ON news.author_id = user.user_id
-            ORDER BY edited_date DESC
-            LIMIT :end OFFSET :start
-        ");
-        $statement->execute(["start" => $start, "end" => $end]);
-        $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $statement = $this->db->prepare("
+                SELECT news.*,user.user_name AS author
+                FROM news
+                JOIN user ON news.author_id = user.user_id
+                ORDER BY edited_date DESC
+                LIMIT :end OFFSET :start
+            ");
+            $statement->execute(["start" => $start, "end" => $end]);
+            $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $this->getNewsCategory($newsList);
+            $this->getNewsCategory($newsList);
 
-        return $newsList;
+            return $newsList;
+        } catch (PDOException $err) {
+            error_log("Error getting news list: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
     }
 
     public function getNewsListByCategory(int $start, int $end, string $category): array
     {
-        $statement = $this->db->prepare("
-            SELECT n.*,u.user_name AS author
-            FROM news n
-            JOIN news_category nc ON nc.news_id = n.news_id
-            JOIN category c ON nc.category_id = c.category_id
-            JOIN user u ON n.author_id = u.user_id
-            WHERE c.category = :category
-            ORDER BY edited_date DESC
-            LIMIT :end OFFSET :start
-        ");
-        $statement->execute(["start" => $start, "end" => $end, "category" => $category]);
-        $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $statement = $this->db->prepare("
+                SELECT n.*,u.user_name AS author
+                FROM news n
+                JOIN news_category nc ON nc.news_id = n.news_id
+                JOIN category c ON nc.category_id = c.category_id
+                JOIN user u ON n.author_id = u.user_id
+                WHERE c.category = :category
+                ORDER BY edited_date DESC
+                LIMIT :end OFFSET :start
+            ");
+            $statement->execute(["start" => $start, "end" => $end, "category" => $category]);
+            $newsList = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $this->getNewsCategory($newsList);
+            $this->getNewsCategory($newsList);
 
-        return $newsList;
+            return $newsList;
+        } catch (PDOException $err) {
+            error_log("Error getting news list by category: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
+    }
     }
 
     public function getUserByUsername(string $username): ?array
     {
-        $statement = $this->db->prepare("SELECT * FROM user WHERE user_name = :username");
-        $statement->execute(["username" => $username]);
-        return $statement->fetch(PDO::FETCH_ASSOC) ?: null;
+        try {
+            $statement = $this->db->prepare("SELECT * FROM user WHERE user_name = :username");
+            $statement->execute(["username" => $username]);
+            return $statement->fetch(PDO::FETCH_ASSOC) ?: null;
+        } catch (PDOException $err) {
+            error_log("Error getting user by username: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
     }
 
     public function getNewsDetails(int $id): ?array
     {
-        $statement = $this->db->prepare("
-            SELECT news.*,user.user_name AS author
-            FROM news 
-            JOIN user ON news.author_id = user.user_id
-            WHERE news_id = :news_id
-        ");
-        $statement->execute(["news_id" => $id]);
-        $newsDetails = [$statement->fetch(PDO::FETCH_ASSOC)];
+        try {
+            $statement = $this->db->prepare("
+                SELECT news.*,user.user_name AS author
+                FROM news 
+                JOIN user ON news.author_id = user.user_id
+                WHERE news_id = :news_id
+            ");
+            $statement->execute(["news_id" => $id]);
+            $newsDetails = [$statement->fetch(PDO::FETCH_ASSOC)];
 
-        $this->getNewsCategory($newsDetails);
+            $this->getNewsCategory($newsDetails);
 
-        if (!$newsDetails) {
-            return null;
+            if (!$newsDetails) {
+                return null;
+            }
+
+            return $newsDetails;
+        } catch (PDOException $err) {
+            error_log("Error getting news details: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
         }
-
-        return $newsDetails;
     }
 
     public function addNewsToDB(
@@ -157,9 +201,7 @@ class Model
                 $statement3->execute(["newsId" => $news["news_id"], "categoryId" => $categoryId]);
             }
 
-            if (!$this->db->commit()) {
-                throw new Exception("Transaction failed while adding news");
-            }
+            $this->db->commit();
         } catch (PDOException $err) {
             error_log("Error adding news to DB: " . $err->getMessage());
             header("HTTP/1.1 500 Internal Server Error");
@@ -226,32 +268,53 @@ class Model
 
     public function getCommentsForNews(int $newsId): array
     {
-        $statement = $this->db->prepare("
-            SELECT c.*, u.user_name AS commentor_name 
-            FROM comment c 
-            LEFT JOIN user u ON c.commentor = u.user_id 
-            WHERE c.news_id = :newsId
-        ");
-        $statement->execute(["newsId" => $newsId]);
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $statement = $this->db->prepare("
+                SELECT c.*, u.user_name AS commentor_name 
+                FROM comment c 
+                LEFT JOIN user u ON c.commentor = u.user_id 
+                WHERE c.news_id = :newsId
+            ");
+            $statement->execute(["newsId" => $newsId]);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $err) {
+            error_log("Error getting comments for news: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
     }
 
     public function addCommentToDB(int $newsId, int $commentorId, string $comment): void
     {
-        $statement = $this->db->prepare("
-            INSERT INTO comment (comment, commentor, news_id)
-            VALUES (:comment, :commentor, :newsId)
-        ");
-        $statement->execute([
-            "comment" => $comment,
-            "commentor" => $commentorId,
-            "newsId" => $newsId,
-        ]);
+        try {
+            $statement = $this->db->prepare("
+                INSERT INTO comment (comment, commentor, news_id)
+                VALUES (:comment, :commentor, :newsId)
+            ");
+            $statement->execute([
+                "comment" => $comment,
+                "commentor" => $commentorId,
+                "newsId" => $newsId,
+            ]);
+        } catch (PDOException $err) {
+            error_log("Error adding comment to DB: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
     }
 
     public function getCategoryList(): array
     {
-        $statement = $this->db->query("SELECT * FROM category");
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $statement = $this->db->query("SELECT * FROM category");
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $err) {
+            error_log("Error getting category list: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
     }
 }
