@@ -27,7 +27,7 @@ session_write_close();
             <input
                 type="checkbox"
                 name="category[]"
-                value="<?= htmlspecialchars(lcfirst($c["category"])) ?>" />
+                value="<?= htmlspecialchars(lcfirst($c["category_id"])) ?>" />
             <?= $c["category"] ?>
         </label>
     <?php endforeach ?>

@@ -30,9 +30,7 @@ class Model
                 WHERE c.category = :category
             ");
             $statement->execute(["category" => $category]);
-            $foo = $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
-
-            return $foo;
+            return $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
         }
         $statement = $this->db->query("SELECT COUNT(*) FROM news");
         return $statement->fetch(PDO::FETCH_ASSOC)["COUNT(*)"];
@@ -53,7 +51,7 @@ class Model
         return $newsList;
     }
 
-    public function getNewsListCategory(int $start, int $end, string $category): array
+    public function getNewsListByCategory(int $start, int $end, string $category): array
     {
         $statement = $this->db->prepare("
             SELECT n.*,u.user_name AS author
@@ -100,7 +98,7 @@ class Model
         string $newsTitle,
         string $newsSummary,
         string $newsBody,
-        array $category
+        array $categoryIdList
     ): void {
         try {
             session_start();
@@ -109,18 +107,29 @@ class Model
 
             $this->db->beginTransaction();
 
-            $statement = $this->db->prepare("
+            $statement1 = $this->db->prepare("
                 INSERT INTO news 
                     (news_title, news_subtitle, body, author_id) 
                 VALUES 
                     (:title, :summary, :body, :authorId)
             ");
-            $statement->execute([
+            $statement1->execute([
                 "title" => $newsTitle,
                 "summary" => $newsSummary,
                 "body" => $newsBody,
                 "authorId" => $authorId,
             ]);
+
+            $statement2 = $this->db->prepare("SELECT news_id FROM news WHERE news_title = :title");
+            $statement2->execute(["title" => $newsTitle]);
+            $news = $statement2->fetch(PDO::FETCH_ASSOC);
+
+            foreach ($categoryIdList as $categoryId) {
+                $statement3 = $this->db->prepare("
+                    INSERT INTO news_category (news_id, category_id) VALUES (:newsId, :categoryId)
+                ");
+                $statement3->execute(["newsId" => $news["news_id"], "categoryId" => $categoryId]);
+            }
 
             if (!$this->db->commit()) {
                 throw new Exception("Transaction failed while adding news");
@@ -195,7 +204,7 @@ class Model
 
     public function getCategoryList(): array
     {
-        $statement = $this->db->query("SELECT category FROM category");
+        $statement = $this->db->query("SELECT * FROM category");
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }

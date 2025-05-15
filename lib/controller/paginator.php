@@ -21,7 +21,7 @@ class Paginator
     {
         $this->totalNews = $this->model->getTotalNewsCount($category);
         if ($category) {
-            return $this->model->getNewsListCategory(0, $this->amountToDisplay, $category);
+            return $this->model->getNewsListByCategory(0, $this->amountToDisplay, $category);
         }
         return $this->model->getNewsList(0, $this->amountToDisplay);
     }
@@ -94,7 +94,7 @@ class Paginator
         $currIdx = ($this->currentPage - 1) * $this->amountToDisplay;
 
         if ($category) {
-            return $this->model->getNewsListCategory($currIdx, $this->amountToDisplay, $category);
+            return $this->model->getNewsListByCategory($currIdx, $this->amountToDisplay, $category);
         }
         return $this->model->getNewsList($currIdx, $this->amountToDisplay);
     }
