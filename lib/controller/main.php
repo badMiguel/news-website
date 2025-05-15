@@ -50,7 +50,6 @@ class Application
         $this->currNewsList = $this->paginator->start($path);
         $totalPages = $this->paginator->getTotalPages();
         $pageInfo = $this->paginator->getPageRange();
-        $startCount = 1;
 
         if (isset($_GET["page"]) || isset($_GET["display"])) {
             if (isset($_GET["display"])) {
@@ -67,10 +66,6 @@ class Application
                 $page = (int) $_GET["page"];
             }
 
-            if ($page !== 0) {
-                $startCount = 0;
-            }
-
             $this->currNewsList = $this->paginator->skipToPage($page, $path);
         }
 
@@ -80,7 +75,7 @@ class Application
             "currentPage" => $this->paginator->currentPage,
             "pageStart" => $pageInfo[0],
             "pageEnd" => $pageInfo[1],
-            "startCount" => $startCount,
+            "title" => $path,
         ];
 
         $this->render("news_by_category", $data);
