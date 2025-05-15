@@ -41,7 +41,7 @@ class Paginator
         $totalPages = $this->getTotalPages();
 
         if ($totalPages <= 2) {
-            return [];
+            return [0, 0];
         } else if ($totalPages === 3) {
             return [2, 3];
         } else if ($totalPages === 4) {

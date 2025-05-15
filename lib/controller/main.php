@@ -58,7 +58,6 @@ class Application
                 }
             }
 
-
             $page = $this->paginator->currentPage;
             if (isset($_GET["page"]) && $_GET["page"] <= $totalPages && $_GET["page"] >= 0) {
                 $page = (int) $_GET["page"];
@@ -70,6 +69,7 @@ class Application
 
             $this->currNewsList = $this->paginator->skipToPage($page, $path);
         }
+
         $pageInfo = $this->paginator->getPageRange();
 
         $data = [
