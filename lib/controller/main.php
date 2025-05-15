@@ -39,13 +39,17 @@ class Application
          * session_write_close();
          */
 
-        $path = null;
-        if (isset($_SERVER["PATH_INFO"])) {
-            $path = ucfirst(str_replace("/", "", $_SERVER["PATH_INFO"]));
-        }
-        $this->currNewsList = $this->paginator->start($path);
+        $this->currNewsList = $this->paginator->start(null);
+        $data = ["currNewsList" => $this->currNewsList];
+        $this->render("home", $data);
+    }
 
+    public function newsByCategory()
+    {
+        $path = ucfirst(str_replace("/", "", $_SERVER["PATH_INFO"]));
+        $this->currNewsList = $this->paginator->start($path);
         $totalPages = $this->paginator->getTotalPages();
+        $pageInfo = $this->paginator->getPageRange();
         $startCount = 1;
 
         if (isset($_GET["page"]) || isset($_GET["display"])) {
@@ -63,25 +67,23 @@ class Application
                 $page = (int) $_GET["page"];
             }
 
-            if ($page !== 1) {
+            if ($page !== 0) {
                 $startCount = 0;
             }
 
             $this->currNewsList = $this->paginator->skipToPage($page, $path);
         }
 
-        $pageInfo = $this->paginator->getPageRange();
-
         $data = [
             "currNewsList" => $this->currNewsList,
-            "currentPage" => $this->paginator->currentPage,
             "totalPages" => $totalPages,
+            "currentPage" => $this->paginator->currentPage,
             "pageStart" => $pageInfo[0],
             "pageEnd" => $pageInfo[1],
             "startCount" => $startCount,
         ];
 
-        $this->render("home", $data);
+        $this->render("news_by_category", $data);
     }
 
     public function news(): void

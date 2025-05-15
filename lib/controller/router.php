@@ -24,13 +24,13 @@ class Router
          */
         $this->routes = [
             "/"                     => [$this->app, "index"],
-            "/home"                 => [$this->app, "index"],
-            "/world"                => [$this->app, "index"],
-            "/politics"             => [$this->app, "index"],
-            "/business"             => [$this->app, "index"],
-            "/technology"           => [$this->app, "index"],
-            "/entertainment"        => [$this->app, "index"],
-            "/sports"               => [$this->app, "index"],
+
+            "/world"                => [$this->app, "newsByCategory"],
+            "/politics"             => [$this->app, "newsByCategory"],
+            "/business"             => [$this->app, "newsByCategory"],
+            "/technology"           => [$this->app, "newsByCategory"],
+            "/entertainment"        => [$this->app, "newsByCategory"],
+            "/sports"               => [$this->app, "newsByCategory"],
 
             "/news"                 => [$this->app, "news"],
             "/news/create"          => [$this->app, "createNews"],

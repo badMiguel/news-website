@@ -1,7 +1,6 @@
 <?php if (count($currNewsList) < 1): ?>
     <p>There are currently no news.</p>
-<?php else: ?>
-    <h2>Just In</h2>
+<?php elseif ($startCount === 1): ?>
     <div class="top-news--container">
         <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($currNewsList[0]["news_id"]) ?>"><?= htmlspecialchars($currNewsList[0]["news_title"]) ?></a></h1>
         <div class="top-news--details">
@@ -22,8 +21,10 @@
     </div>
 <?php endif ?>
 
+<?php require VIEWS . "news_amount.php" ?>
+
 <?php if (count($currNewsList) > 1): ?>
-    <?php for ($i = 1; $i < count($currNewsList); $i++): ?>
+    <?php for ($i = $startCount; $i < count($currNewsList); $i++): ?>
         <div class='news-card'>
             <h2>
                 <a href="/news?id=<?= htmlspecialchars($currNewsList[$i]["news_id"]) ?>">
@@ -47,3 +48,5 @@
         <hr>
     <?php endfor; ?>
 <?php endif; ?>
+
+<?php require VIEWS . "page_number.php" ?>

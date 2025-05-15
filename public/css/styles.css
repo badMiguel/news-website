@@ -5,23 +5,32 @@
 
 :root {
     font-size: 18px;
-    --bg-primary: #;
-    --bg-secondary: #;
-    --bg-third: #;
-    --bg-fourth: #;
-    --font-primary: #;
-    --font-secondary: #;
+    --bg-primary: #f4f4f7;
+    --color-1: #ebecf3;
+    --color-2: #dadce8;
+    --color-3: #9ca5cd;
+    --color-4: #6f7aa7;
+    --color-5: #7080c3;
+    --font-primary: #070708;
 }
 
 body {
     font-family: "Merriweather", Georgia, Cambria, "Times New Roman", Times, serif;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
 }
 
 h1,
 h2,
 h3,
-nav {
+nav,
+.login--container {
     font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: var(--font-primary);
 }
 
 .top--container {
@@ -48,6 +57,11 @@ nav {
 }
 
 .nav--container {
+    background-color: var(--color-2);
+    padding: 1rem 0;
+}
+
+.nav--alignment {
     width: 80%;
     max-width: 45rem;
     justify-self: center;
@@ -86,7 +100,11 @@ nav {
 }
 
 .news-card {
-    margin: 2.5rem 0;
+    margin: 1rem 0;
+}
+
+hr {
+    margin: 3rem 0;
 }
 
 .news-amount--container {

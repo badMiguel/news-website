@@ -16,7 +16,7 @@
         <div class="top--container">
             <!-- logo container placeholder for now... can be replaced -->
             <div class="logo--container"></div>
-            <h1 class="website-title">Austro-Asian Times</h1>
+            <h1 class="website-title"><a href="/">Austro-Asian Times</a></h1>
             <div class="login--container">
                 <?php
                 session_start();
@@ -32,17 +32,19 @@
                 ?>
             </div>
         </div>
-        <nav class="nav--container">
-            <ul class="nav--list">
-                <li><a href="/">Home</a></li>
-                <li><a href="/world">World</a></li>
-                <li><a href="/politics">Politics</a></li>
-                <li><a href="/business">Business</a></li>
-                <li><a href="/technology">Technology</a></li>
-                <li><a href="/entertainment">Entertainment</a></li>
-                <li><a href="/sports">Sports</a></li>
-            </ul>
-        </nav>
+        <div class="nav--container">
+            <nav class="nav--alignment">
+                <ul class="nav--list">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/world">World</a></li>
+                    <li><a href="/politics">Politics</a></li>
+                    <li><a href="/business">Business</a></li>
+                    <li><a href="/technology">Technology</a></li>
+                    <li><a href="/entertainment">Entertainment</a></li>
+                    <li><a href="/sports">Sports</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
     <main class="main--container">
         <div class="main--spacing">
