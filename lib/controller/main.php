@@ -41,13 +41,14 @@ class Application
 
         $latestNews = $this->model->getLatestNews();
         $recentNewsPerCategory = [
-            "world" => $this->model->getNewsListByCategory(0, 5, "world"),
-            "politics" => $this->model->getNewsListByCategory(0, 5, "Politics"),
-            "business" => $this->model->getNewsListByCategory(0, 5, "Business"),
-            "technology" => $this->model->getNewsListByCategory(0, 5, "Technology"),
-            "entertainment" => $this->model->getNewsListByCategory(0, 5, "Entertainment"),
-            "sports" => $this->model->getNewsListByCategory(0, 5, "Sports"),
+            "World" => $this->model->getNewsListByCategory(0, 3, "World"),
+            "Politics" => $this->model->getNewsListByCategory(0, 3, "Politics"),
+            "Business" => $this->model->getNewsListByCategory(0, 3, "Business"),
+            "Technology" => $this->model->getNewsListByCategory(0, 3, "Technology"),
+            "Entertainment" => $this->model->getNewsListByCategory(0, 3, "Entertainment"),
+            "Sports" => $this->model->getNewsListByCategory(0, 3, "Sports"),
         ];
+
         $data = [
             "latestNews" => $latestNews,
             "recentNewsPerCategory" => $recentNewsPerCategory,

@@ -22,28 +22,31 @@
     </div>
 <?php endif ?>
 
-<?php if (count($currNewsList) > 1): ?>
-    <?php for ($i = 1; $i < count($currNewsList); $i++): ?>
-        <div class='news-card'>
-            <h2>
-                <a href="/news?id=<?= htmlspecialchars($currNewsList[$i]["news_id"]) ?>">
-                    <?= htmlspecialchars($currNewsList[$i]["news_title"]) ?>
-                </a>
-            </h2>
-            <p><?= htmlspecialchars($currNewsList[$i]["news_subtitle"]) ?></p>
-            <br>
-            <?php if ($currNewsList[$i]["author"]): ?>
-                <p>Author: <?= htmlspecialchars($currNewsList[$i]["author"]) ?></p>
-            <?php endif; ?>
-            <div class="category--container">
-                <p>Category:</p>
-                <?php foreach ($currNewsList[$i]["category"] as $category): ?>
-                    <p><?= $category ?></p>
-                <?php endforeach; ?>
+<?php foreach ($recentNewsPerCategory as $newsListKey => $newsList): ?>
+    <?php if (count($newsList) > 1): ?>
+        <h1><?= htmlspecialchars($newsListKey) ?></h1>
+        <?php foreach ($newsList as $news): ?>
+            <div class='news-card'>
+                <h2>
+                    <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
+                        <?= htmlspecialchars($news["news_title"]) ?>
+                    </a>
+                </h2>
+                <p><?= htmlspecialchars($news["news_subtitle"]) ?></p>
+                <br>
+                <?php if ($news["author"]): ?>
+                    <p>Author: <?= htmlspecialchars($news["author"]) ?></p>
+                <?php endif; ?>
+                <div class="category--container">
+                    <p>Category:</p>
+                    <?php foreach ($news["category"] as $category): ?>
+                        <p><?= $category ?></p>
+                    <?php endforeach; ?>
+                </div>
+                <p>Created: <em><?= htmlspecialchars($news["created_date"]) ?></em></p>
+                <p>Edited: <em><?= htmlspecialchars($news["edited_date"]) ?></em></p>
             </div>
-            <p>Created: <em><?= htmlspecialchars($currNewsList[$i]["created_date"]) ?></em></p>
-            <p>Edited: <em><?= htmlspecialchars($currNewsList[$i]["edited_date"]) ?></em></p>
-        </div>
+        <?php endforeach; ?>
         <hr>
-    <?php endfor; ?>
-<?php endif; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
