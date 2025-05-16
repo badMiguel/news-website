@@ -47,9 +47,15 @@
         </div>
     </header>
     <main class="main--container">
-        <div class="main--spacing">
-            <?php require_once $viewPath; ?>
-        </div>
+        <?php if ($isHome): ?>
+            <div class="home--container">
+                <?php require_once $viewPath; ?>
+            </div>
+        <?php else: ?>
+            <div class="main--spacing">
+                <?php require_once $viewPath; ?>
+            </div>
+        <?php endif ?>
     </main>
 </body>
 

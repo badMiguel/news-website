@@ -8,7 +8,7 @@ if (count($currNewsList) < 1) {
 <?php require VIEWS . "news_amount.php" ?>
 
 <?php foreach ($currNewsList as $news): ?>
-    <div class='news-card'>
+    <div class='news--card'>
         <h2>
             <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
                 <?= htmlspecialchars($news["news_title"]) ?>

@@ -52,6 +52,7 @@ class Application
         $data = [
             "latestNews" => $latestNews,
             "recentNewsPerCategory" => $recentNewsPerCategory,
+            "isHome" => true,
         ];
         $this->render("home", $data);
     }
