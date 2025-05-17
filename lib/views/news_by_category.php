@@ -25,8 +25,7 @@ if (count($currNewsList) < 1) {
                 <p><?= $category ?></p>
             <?php endforeach; ?>
         </div>
-        <p>Created: <em><?= htmlspecialchars($news["created_date"]) ?></em></p>
-        <p>Edited: <em><?= htmlspecialchars($news["edited_date"]) ?></em></p>
+        <?php require VIEWS . "time_ago_display.php" ?>
     </div>
     <hr>
 <?php endforeach; ?>

@@ -99,7 +99,8 @@ class Application
         $newsDetails = $this->model->getNewsDetails((int) $_GET["id"]);
 
         $data = [
-            "newsDetails" => $newsDetails,
+            "title" => $newsDetails[0]["news_title"],
+            "newsDetails" => $newsDetails[0],
         ];
 
         $this->render("news_details", $data);
