@@ -6,21 +6,21 @@
             <div class="top-news--container">
                 <h3>Just In</h3>
                 <div class="top-news--card">
-                    <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews[0]["news_id"]) ?>"><?= htmlspecialchars($latestNews[0]["news_title"]) ?></a></h1>
+                    <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>"><?= htmlspecialchars($latestNews["news_title"]) ?></a></h1>
                     <div class="top-news--details">
-                        <p><?= htmlspecialchars($latestNews[0]["news_subtitle"]) ?></p>
+                        <p><?= htmlspecialchars($latestNews["news_subtitle"]) ?></p>
                         <br>
-                        <?php if ($latestNews[0]["author"]): ?>
-                            <p>Author: <?= htmlspecialchars($latestNews[0]["author"]) ?></p>
+                        <?php if ($latestNews["author"]): ?>
+                            <p>Author: <?= htmlspecialchars($latestNews["author"]) ?></p>
                         <?php endif; ?>
                         <div class="category--container">
                             <p>Category:</p>
-                            <?php foreach ($latestNews[0]["category"] as $category): ?>
+                            <?php foreach ($latestNews["category"] as $category): ?>
                                 <p><?= $category ?></p>
                             <?php endforeach; ?>
                         </div>
-                        <p>Created: <em><?= htmlspecialchars($latestNews[0]["created_date"]) ?></em></p>
-                        <p>Edited: <em><?= htmlspecialchars($latestNews[0]["edited_date"]) ?></em></p>
+                        <?php $news = $latestNews ?>
+                        <?php require VIEWS . "time_ago_display.php" ?>
                     </div>
                 </div>
             </div>
