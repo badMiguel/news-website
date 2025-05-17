@@ -21,6 +21,9 @@
                 <?php
                 session_start();
                 if (isset($_SESSION['username'])) {
+                    if ($_SESSION['privilege'] === EDITOR) {
+                        echo "<p><a href='/admin'>Admin</a></p>";
+                    }
                     if ($_SESSION['privilege'] >= JOURNALIST) {
                         echo "<p><a href='/news/create'>Create</a></p>";
                     }

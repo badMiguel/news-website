@@ -1,15 +1,19 @@
 <?php
+function add_S(int $time): string
+{
+    if ($time > 1) {
+        return "s";
+    }
+    return "";
+};
+
 if (!$newsDetails) {
-    echo "
-        <p>Sorry news does not exist</p>
-    ";
+    echo "<p>Sorry news does not exist</p>";
     exit;
 }
 ?>
 
-<h2><?php echo htmlspecialchars($newsDetails[0]['news_title']); ?></h2>
-<p><strong>Summary:</strong> <?php echo htmlspecialchars($newsDetails[0]['news_subtitle']); ?></p>
-<p><strong>Body:</strong> <?php echo nl2br(htmlspecialchars($newsDetails[0]['body'])); ?></p>
+<h1 class="news-title"><?php echo htmlspecialchars($newsDetails[0]['news_title']); ?></h1>
 <p><strong>Author:</strong> <?php echo htmlspecialchars($newsDetails[0]['author'] ?? 'Unknown'); ?></p>
 <div class="category--container">
     <p><strong>Category:</strong></p>
@@ -17,8 +21,49 @@ if (!$newsDetails) {
         <p><?php echo htmlspecialchars($category); ?></p>
     <?php endforeach ?>
 </div>
-<p><strong>Created:</strong> <?php echo htmlspecialchars($newsDetails[0]['created_date']); ?></p>
-<p><strong>Edited:</strong> <?php echo htmlspecialchars($newsDetails[0]['edited_date']); ?></p>
+
+<?php
+$created = new DateTime($newsDetails[0]["created_date"]);
+$edited = new DateTime($newsDetails[0]["edited_date"]);
+$now = new DateTime();
+$createdDiff = $created->diff($now);
+$editedDiff = $edited->diff($now);
+
+if ($createdDiff->y > 0) {
+    echo htmlspecialchars($createdDiff->y . " year" . add_S($createdDiff->y) . " ago");
+} else if ($createdDiff->m > 0) {
+    echo htmlspecialchars($createdDiff->m . " month" . add_S($createdDiff->m) . " ago");
+} else if ($createdDiff->d > 0) {
+    echo htmlspecialchars($createdDiff->d . " day" . add_S($createdDiff->d) . " ago");
+} else if ($createdDiff->h > 0) {
+    echo htmlspecialchars($createdDiff->h . " hour" . add_S($createdDiff->h) . " ago");
+} else if ($createdDiff->i > 0) {
+    echo htmlspecialchars($createdDiff->i . " minute" . add_S($createdDiff->i) . " ago");
+} else if ($createdDiff->s > 0) {
+    echo htmlspecialchars($createdDiff->s . " second" . add_S($createdDiff->s) . " ago");
+}
+
+if ($created != $edited) {
+    echo "<p>Edited last ";
+    if ($editedDiff->y > 0) {
+        echo htmlspecialchars($editedDiff->y . " year" . add_S($editedDiff->y) . " ago");
+    } else if ($editedDiff->m > 0) {
+        echo htmlspecialchars($editedDiff->m . " month" . add_S($editedDiff->m) . " ago");
+    } else if ($editedDiff->d > 0) {
+        echo htmlspecialchars($editedDiff->d . " day" . add_S($editedDiff->d) . " ago");
+    } else if ($editedDiff->h > 0) {
+        echo htmlspecialchars($editedDiff->h . " hour" . add_S($editedDiff->h) . " ago");
+    } else if ($editedDiff->i > 0) {
+        echo htmlspecialchars($editedDiff->i . " minute" . add_S($editedDiff->i) . " ago");
+    } else if ($editedDiff->s > 0) {
+        echo htmlspecialchars($editedDiff->s . " second" . add_S($editedDiff->s) . " ago");
+    }
+    echo "</p>";
+}
+
+?>
+<p class="news-subtitle"><?php echo htmlspecialchars($newsDetails[0]['news_subtitle']); ?></p>
+<p class="body"><?php echo nl2br(htmlspecialchars($newsDetails[0]['body'])); ?></p>
 
 <?php if (isset($_SESSION['privilege']) && $_SESSION['privilege'] >= EDITOR): ?>
     <a href="/news/edit?id=<?php echo htmlspecialchars($newsDetails[0]['news_id']); ?>">Edit</a>

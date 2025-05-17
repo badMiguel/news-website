@@ -4,7 +4,7 @@
             <p>There are currently no news.</p>
         <?php else: ?>
             <div class="top-news--container">
-                <h2>Just In</h2>
+                <h3>Just In</h3>
                 <div class="top-news--card">
                     <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews[0]["news_id"]) ?>"><?= htmlspecialchars($latestNews[0]["news_title"]) ?></a></h1>
                     <div class="top-news--details">
@@ -40,26 +40,19 @@
             <div class="main--spacing">
                 <div
                     class="news-category--card">
-                    <h1><?= htmlspecialchars($newsListKey) ?></h1>
+                    <h1 class="category-title"><?= htmlspecialchars($newsListKey) ?></h1>
                     <?php foreach ($newsList as $news): ?>
-                        <h2>
+                        <h2 class="news-title">
                             <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
                                 <?= htmlspecialchars($news["news_title"]) ?>
                             </a>
                         </h2>
-                        <p><?= htmlspecialchars($news["news_subtitle"]) ?></p>
-                        <br>
+                        <p class="news-subtitle"><?= htmlspecialchars($news["news_subtitle"]) ?></p>
                         <?php if ($news["author"]): ?>
                             <p>Author: <?= htmlspecialchars($news["author"]) ?></p>
                         <?php endif; ?>
-                        <div class="category--container">
-                            <p>Category:</p>
-                            <?php foreach ($news["category"] as $category): ?>
-                                <p><?= $category ?></p>
-                            <?php endforeach; ?>
-                        </div>
-                        <p>Created: <em><?= htmlspecialchars($news["created_date"]) ?></em></p>
-                        <p>Edited: <em><?= htmlspecialchars($news["edited_date"]) ?></em></p>
+
+                        <?php require VIEWS . "time_ago_display.php" ?>
                     <?php endforeach; ?>
                 </div>
             </div>
