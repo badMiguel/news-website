@@ -1,12 +1,16 @@
 <h2>Edit News</h2>
-<?php if (isset($_SESSION['newsEditStatus'])): ?>
-    <?php if ($_SESSION['newsEditStatus']): ?>
-        <p style="color: green;">News updated successfully!</p>
-    <?php else: ?>
-        <p style="color: red;">Please fill in.</p>
-    <?php endif; ?>
-    <?php unset($_SESSION['newsEditStatus']); ?>
-<?php endif; ?>
+<?php
+session_start();
+if (isset($_SESSION['newsEditStatus'])) {
+    if ($_SESSION['newsEditStatus']) {
+        echo "<p style='color: green;'>News updated successfully!</p>";
+    } else {
+        echo "<p style='color: red;'>Please fill in.</p>";
+    }
+    unset($_SESSION['newsEditStatus']);
+}
+session_write_close();
+?>
 
 <form method="POST" action="/news/edit/submit">
     <input type="hidden" name="news_id" value="<?php echo htmlspecialchars($newsDetails[0]['news_id']); ?>">
