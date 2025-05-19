@@ -35,7 +35,11 @@
             <?php endif ?>>
             <div class="main--spacing">
                 <div class="news-category--card-container">
-                    <h1 class="category-title"><?= htmlspecialchars($newsListKey) ?></h1>
+                    <h1 class="category-title">
+                        <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
+                            <?= htmlspecialchars($newsListKey) ?>
+                        </a>
+                    </h1>
                     <?php foreach ($newsList as $news): ?>
                         <div class="news-category--card">
                             <h2 class="home-news--title">
@@ -48,6 +52,11 @@
                             <p class="home-news--time"><?php require VIEWS . "time_ago_display.php" ?></p>
                         </div>
                     <?php endforeach; ?>
+                    <p class="home-news--view-more">
+                        <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
+                            View More
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
