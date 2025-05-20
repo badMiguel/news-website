@@ -68,31 +68,72 @@ if (!$newsDetails) {
                 Delete
             </a>
         </p>
+
+        <?php if ($newsDetails['comments_enabled']): ?>
+            <p>
+                <a href="/news/comments/disable?id=<?= htmlspecialchars($newsDetails['news_id']) ?>&csrf_token=<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                    Disable Comments
+                </a>
+            </p>
+        <?php else: ?>
+            <p>
+                <a href="/news/comments/enable?id=<?= htmlspecialchars($newsDetails['news_id']) ?>&csrf_token=<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                    Enable Comments
+                </a>
+            </p>
+        <?php endif; ?>
     </div>
 <?php endif; ?>
 
-<!-- add comment function -->
+
 <h3>Comments</h3>
-<?php if (isset($newsDetails['comments']) && !empty($newsDetails['comments'])): ?>
-    <ul>
-        <?php foreach ($newsDetails['comments'] as $comment): ?>
-            <li>
-                <strong><?php echo htmlspecialchars($comment['commentor_name'] ?? 'Anonymous'); ?>:</strong>
-                <?php echo htmlspecialchars($comment['comment']); ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
+<?php if (empty($newsDetails['comments'])): ?>
     <p>No comments yet.</p>
+<?php else: ?>
+    <div class="comments">
+        <?php
+        function displayComments($comments, $level = 0) {
+            foreach ($comments as $comment):
+        ?>
+            <div class="comment" style="margin-left: <?= $level * 20 ?>px; border-left: 2px solid #ccc; padding-left: 10px; margin-bottom: 10px;">
+                <p>
+                    <strong><?= htmlspecialchars($comment['commentor_name'] ?? 'Anonymous') ?></strong>
+                    <small>(<?= htmlspecialchars($comment['created_date']) ?>)</small>
+                </p>
+                <p><?= htmlspecialchars($comment['comment']) ?></p>
+                <?php if (isset($_SESSION['user_id']) && $newsDetails['comments_enabled']): ?>
+                    <form action="/news/comment/add" method="POST" style="margin-top: 5px;">
+                        <input type="hidden" name="news_id" value="<?= htmlspecialchars($newsDetails['news_id']) ?>">
+                        <input type="hidden" name="parent_comment_id" value="<?= htmlspecialchars($comment['comment_id']) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <textarea name="comment" placeholder="Reply to this comment..." required style="width: 100%; height: 50px;"></textarea>
+                        <button type="submit">Reply</button>
+                    </form>
+                <?php endif; ?>
+                <?php if (!empty($comment['replies'])): ?>
+                    <?php displayComments($comment['replies'], $level + 1); ?>
+                <?php endif; ?>
+            </div>
+        <?php
+            endforeach;
+        }
+        displayComments($newsDetails['comments']);
+        ?>
+    </div>
 <?php endif; ?>
 
-<?php if (isset($_SESSION['user_id'])): ?>
-    <h4>Add a Comment</h4>
-    <form method="POST" action="/news/comment/add">
-        <input type="hidden" name="news_id" value="<?php echo htmlspecialchars($newsDetails['news_id']); ?>">
-        <label>Comment: <textarea name="comment" required></textarea></label><br>
-        <button type="submit">Add Comment</button>
-    </form>
+<?php if ($newsDetails['comments_enabled']): ?>
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <h4>Add a Comment</h4>
+        <form method="POST" action="/news/comment/add">
+            <input type="hidden" name="news_id" value="<?php echo htmlspecialchars($newsDetails['news_id']); ?>">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+            <label>Comment: <textarea name="comment" required style="width: 100%; height: 100px;"></textarea></label><br>
+            <button type="submit">Add Comment</button>
+        </form>
+    <?php else: ?>
+        <p>Please <a href="/login">login</a> to add a comment.</p>
+    <?php endif; ?>
 <?php else: ?>
-    <p>Please <a href="/login">login</a> to add a comment.</p>
+    <p>Comments are disabled for this article.</p>
 <?php endif; ?>

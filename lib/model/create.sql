@@ -21,6 +21,7 @@ CREATE TABLE news (
     author_id INTEGER NOT NULL,
     created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     edited_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    comments_enabled INTEGER DEFAULT 1,
     FOREIGN KEY(author_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 
@@ -29,8 +30,11 @@ CREATE TABLE comment (
     comment TEXT NOT NULL, 
     commentor INTEGER, 
     news_id INTEGER NOT NULL,
+    parent_comment_id INTEGER,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(commentor) REFERENCES user(user_id) ON DELETE CASCADE,
-    FOREIGN KEY(news_id) REFERENCES news(news_id) ON DELETE CASCADE
+    FOREIGN KEY(news_id) REFERENCES news(news_id) ON DELETE CASCADE,
+    FOREIGN KEY(parent_comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE
 );
 
 CREATE TABLE category (

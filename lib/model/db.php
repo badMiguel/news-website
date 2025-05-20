@@ -176,10 +176,11 @@ class Model
 
             $this->getNewsCategory($newsDetails);
 
-            if (!$newsDetails) {
+            if (!$newsDetails[0]) { // [수정] !$newsDetails가 아니라 $newsDetails[0] 확인
                 return null;
             }
 
+            $newsDetails['comments'] = $this->getCommentsForNews($id);
             return $newsDetails;
         } catch (PDOException $err) {
             error_log("Error getting news details: " . $err->getMessage());
@@ -299,9 +300,26 @@ class Model
                 FROM comment c 
                 LEFT JOIN user u ON c.commentor = u.user_id 
                 WHERE c.news_id = :newsId
+                ORDER BY c.created_date ASC 
             ");
             $statement->execute(["newsId" => $newsId]);
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            $comments = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+           //reply of a comment
+            $commentTree = [];
+            $commentMap = [];
+            foreach ($comments as $comment) {
+                $comment['replies'] = [];
+                $commentMap[$comment['comment_id']] = $comment;
+            }
+            foreach ($commentMap as $commentId => &$comment) {
+                if ($comment['parent_comment_id']) {
+                    $commentMap[$comment['parent_comment_id']]['replies'][] = &$comment;
+                } else {
+                    $commentTree[] = &$comment;
+                }
+            }
+            return $commentTree;
         } catch (PDOException $err) {
             error_log("Error getting comments for news: " . $err->getMessage());
             header("HTTP/1.1 500 Internal Server Error");
@@ -321,9 +339,44 @@ class Model
                 "comment" => $comment,
                 "commentor" => $commentorId,
                 "newsId" => $newsId,
+                "parentCommentId" => $parentCommentId, 
             ]);
         } catch (PDOException $err) {
             error_log("Error adding comment to DB: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
+    }
+
+    public function toggleComments(int $newsId, bool $enable): void
+    {
+        try {
+            $statement = $this->db->prepare("
+                UPDATE news 
+                SET comments_enabled = :enabled
+                WHERE news_id = :newsId
+            ");
+            $statement->execute([
+                'enabled' => $enable ? 1 : 0,
+                'newsId' => $newsId,
+            ]);
+        } catch (PDOException $err) {
+            error_log("Error toggling comments: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
+    }
+
+    public function commentExists(int $commentId): bool
+    {
+        try {
+            $statement = $this->db->prepare("SELECT COUNT(*) FROM comment WHERE comment_id = :commentId");
+            $statement->execute(['commentId' => $commentId]);
+            return $statement->fetchColumn() > 0;
+        } catch (PDOException $err) {
+            error_log("Error checking comment existence: " . $err->getMessage());
             header("HTTP/1.1 500 Internal Server Error");
             echo "Sorry, something went wrong. Please try again later.";
             exit();

@@ -316,20 +316,71 @@ class Application
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newsId = (int) $_POST['news_id'];
-            $comment = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING);
+            // CSRF 
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                header("Location: /news?id=" . (int)$_POST['news_id']);
+                exit;
+            }
 
-            if ($comment === null || $comment === "") {
+            $newsId = (int) $_POST['news_id'];
+            //  Comment activation status check
+            $newsDetails = $this->model->getNewsDetails($newsId);
+            if (!$newsDetails || !$newsDetails[0]['comments_enabled']) {
                 header("Location: /news?id=" . $newsId);
                 exit;
             }
 
-            $this->model->addCommentToDB($newsId, $_SESSION['user_id'], $comment);
+            $comment = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING);
+            if ($comment === null || $comment === "" || strlen($comment) > 1000) { // [수정] 댓글 길이 제한
+                header("Location: /news?id=" . $newsId);
+                exit;
+            }
+
+            // Reply-to-comment handling
+            $parentCommentId = isset($_POST['parent_comment_id']) ? (int)$_POST['parent_comment_id'] : null;
+            if ($parentCommentId && !$this->model->commentExists($parentCommentId)) {
+                header("Location: /news?id=" . $newsId);
+                exit;
+            }
+
+            $this->model->addCommentToDB($newsId, $_SESSION['user_id'], $comment, $parentCommentId);
         }
 
         header("Location: /news?id=" . $newsId);
         exit;
-        session_write_close();
+    }
+
+    // Method to enable/disable comments
+    public function enableComments(): void
+    {
+        $this->checkPrivilege(EDITOR);
+        if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
+            header('Location: /admin');
+            exit;
+        }
+
+        $newsId = (int)($_GET['id'] ?? 0);
+        if ($newsId > 0) {
+            $this->model->toggleComments($newsId, true);
+        }
+        header('Location: /news?id=' . $newsId);
+        exit;
+    }
+
+    public function disableComments(): void
+    {
+        $this->checkPrivilege(EDITOR);
+        if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
+            header('Location: /admin');
+            exit;
+        }
+
+        $newsId = (int)($_GET['id'] ?? 0);
+        if ($newsId > 0) {
+            $this->model->toggleComments($newsId, false);
+        }
+        header('Location: /news?id=' . $newsId);
+        exit;
     }
 
     public function admin(): void
