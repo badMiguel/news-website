@@ -92,7 +92,6 @@ if (!$newsDetails) {
 <?php else: ?>
     <div class="comments">
         <?php
-      
         function displayComments($comments, $level = 0, $newsId, $commentsEnabled) {
             foreach ($comments as $comment):
         ?>
@@ -100,8 +99,24 @@ if (!$newsDetails) {
                 <p>
                     <strong><?= htmlspecialchars($comment['commentor_name'] ?? 'Anonymous') ?></strong>
                     <small>(<?= htmlspecialchars($comment['created_date']) ?>)</small>
+                    <!-- delete and edit -->
+                    <?php if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] == $comment['commentor'] || $_SESSION['privilege'] >= EDITOR)): ?>
+                        <span>
+                            <a href="/news/comment/delete?id=<?= htmlspecialchars($comment['comment_id']) ?>&news_id=<?= htmlspecialchars($newsId) ?>&csrf_token=<?= htmlspecialchars($_SESSION['csrf_token']) ?>" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</a>
+                            | <a href="#" onclick="document.getElementById('edit-form-<?= $comment['comment_id'] ?>').style.display='block'; return false;">Edit</a>
+                        </span>
+                    <?php endif; ?>
                 </p>
                 <p><?= htmlspecialchars($comment['comment']) ?></p>
+                <?php if (isset($_SESSION['user_id']) && ($_SESSION['user_id'] == $comment['commentor'] || $_SESSION['privilege'] >= EDITOR)): ?>
+                    <form id="edit-form-<?= $comment['comment_id'] ?>" action="/news/comment/edit" method="POST" style="display: none; margin-top: 5px;">
+                        <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['comment_id']) ?>">
+                        <input type="hidden" name="news_id" value="<?= htmlspecialchars($newsId) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                        <textarea name="new_comment" required style="width: 100%; height: 50px;"><?= htmlspecialchars($comment['comment']) ?></textarea>
+                        <button type="submit">Update Comment</button>
+                    </form>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id']) && $commentsEnabled): ?>
                     <form action="/news/comment/add" method="POST" style="margin-top: 5px;">
                         <input type="hidden" name="news_id" value="<?= htmlspecialchars($newsId) ?>">
@@ -118,7 +133,6 @@ if (!$newsDetails) {
         <?php
             endforeach;
         }
-   
         displayComments($newsDetails['comments'], 0, $newsDetails['news_id'], $newsDetails['comments_enabled']);
         ?>
     </div>

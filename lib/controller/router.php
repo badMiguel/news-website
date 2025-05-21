@@ -47,6 +47,14 @@ class Router
 
             "/news/comments/enable" => [$this->app, "enableComments"],
             "/news/comments/disable" => [$this->app, "disableComments"],
+
+            "/news/comment/delete"  => [$this->app, "deleteComment"],
+            "/news/comment/edit"    => [$this->app, "editComment"],
+
+            "/login"                => [$this->app, "login"],
+            "/logout"               => [$this->app, "logout"],
+
+            "/admin"                => [$this->app, "admin"],
         ];
     }
 

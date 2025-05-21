@@ -394,6 +394,97 @@ class Application
         exit;
     }
 
+    // delete
+    public function deleteComment(): void
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $commentId = (int)($_GET['id'] ?? 0);
+        $newsId = (int)($_GET['news_id'] ?? 0);
+
+        // CSRF 
+        if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+    
+        $comments = $this->model->getCommentsForNews($newsId);
+        $commentExists = false;
+        foreach ($comments as $comment) {
+            if ($comment['comment_id'] == $commentId) {
+                $commentExists = true;
+                $commentorId = $comment['commentor'];
+                break;
+            }
+        }
+
+        if (!$commentExists) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        if ($_SESSION['user_id'] != $commentorId && $_SESSION['privilege'] < EDITOR) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        $this->model->deleteComment($commentId);
+        header("Location: /news?id=" . $newsId);
+        exit;
+    }
+
+    // edit
+    public function editComment(): void
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $commentId = (int)($_POST['comment_id'] ?? 0);
+        $newsId = (int)($_POST['news_id'] ?? 0);
+        $newComment = filter_input(INPUT_POST, 'new_comment', FILTER_SANITIZE_STRING);
+
+    
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        if ($newComment === null || $newComment === "" || strlen($newComment) > 1000) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        $comments = $this->model->getCommentsForNews($newsId);
+        $commentExists = false;
+        foreach ($comments as $comment) {
+            if ($comment['comment_id'] == $commentId) {
+                $commentExists = true;
+                $commentorId = $comment['commentor'];
+                break;
+            }
+        }
+
+        if (!$commentExists) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        if ($_SESSION['user_id'] != $commentorId && $_SESSION['privilege'] < EDITOR) {
+            header("Location: /news?id=" . $newsId);
+            exit;
+        }
+
+        $this->model->updateComment($commentId, $newComment);
+        header("Location: /news?id=" . $newsId);
+        exit;
+    }
+
     public function admin(): void
     {
         $this->currNewsList = $this->paginator->start(null);

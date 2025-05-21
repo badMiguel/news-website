@@ -176,7 +176,7 @@ class Model
 
             $this->getNewsCategory($newsDetails);
 
-            if (!$newsDetails[0]) { // [수정] !$newsDetails가 아니라 $newsDetails[0] 확인
+            if (!$newsDetails[0]) { 
                 return null;
             }
 
@@ -384,7 +384,39 @@ class Model
             exit();
         }
     }
+public function deleteComment(int $commentId): void
+    {
+        try {
+            $statement = $this->db->prepare("DELETE FROM comment WHERE comment_id = :commentId");
+            $statement->execute(["commentId" => $commentId]);
+        } catch (PDOException $err) {
+            error_log("Error deleting comment: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
+    }
 
+    // edit 
+    public function updateComment(int $commentId, string $newComment): void
+    {
+        try {
+            $statement = $this->db->prepare("
+                UPDATE comment 
+                SET comment = :newComment, created_date = CURRENT_TIMESTAMP
+                WHERE comment_id = :commentId
+            ");
+            $statement->execute([
+                "newComment" => $newComment,
+                "commentId" => $commentId,
+            ]);
+        } catch (PDOException $err) {
+            error_log("Error updating comment: " . $err->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. Please try again later.";
+            exit();
+        }
+    }
     public function getCategoryList(): array
     {
         try {
