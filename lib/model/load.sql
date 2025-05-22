@@ -1,12 +1,16 @@
 -- Insert data into the user table
-INSERT INTO user (user_name, hashed_password, salt, privilege) 
+INSERT INTO user (user_name, full_name, hashed_password, salt, privilege) 
 VALUES 
-    ('alice', '$2y$10$.pGITR3/yGTA7UAoqb1DvuXNoAa8hNA/yQ3fC.aCWDyg/ths0QywS', '329bf2d0601a4df19965b5fdd0a4b629', 1),
-    ('bob', ' $2y$10$RTofvZZF6zldpGyZZSjupeoXPT/s6ARj/8HZcG6grC/FgwUX3Svk2', ' 91c34c21416704ee2920863b32246660', 0),
-    ('charlie', '$2y$10$gxDI3/Ff6mIVEpFD6eF.UenBQ.k0/nHxzWw5epkAcx2.yH8Cjvone', ' 186e412edee520387a240e6bd06a0e02', 0),
-    ('editor1', '$2y$10$QMlRCyskb4TZvzTsnS6HquySQvGs85zvEkIdbrHse7UwNT551WyrW', '82cc1443fc5f9f1171d81fb7eed5fb59', 2),
-    ('journalist1', '$2y$10$9/gG1W/hHk8KS4GleMuQ.u5jBtc.H.YwFbs0hn6mVsvDXszK7brTe', 'f33c18241e019686468ccd810124e7e9', 1),
-    ('user1', '$2y$10$jM7SUi5FL6YkbDp.5hpt9eCQlxHZQdbEBOgfDNOYn.jguR5pfvh22', '00b2dc61dd6bb558f16b1c3ef0e4c45e', 0); 
+    ('user1', 'Dominique Pickett', '$2y$12$Jt35WokUggJ9I5Wxa0gHr.dHODoakM2MDjD5aa18mBoaiWR6aSBAS', '2972da6e5958959791267e5e530c39fa', '0'),
+    ('user2', 'Boris Harding', '$2y$12$mE8gI6DNJawNAttfiJzMheX3FWvGb0eQs2jlP3ksF85aNgFT3rZkq', '8e8cb9a7b45aa060d318ce8af0f00eaf', '0'),
+    ('user3', 'Nasim Silva', '$2y$12$blVDCpARMy2iMgL3GL6TBOCQHsX5gewuCVyogz.SQ6gWiwJt6IcyO', 'c0c171516019482b0671c73a9ef07290', '0'),
+    ('journalist1', 'Vance Murray', '$2y$12$yzVXeZXpylB0q5pMVQEVUel98Kjv3sj2c9F.adpa8GNpXlLVz5DxC', '4b3be3942395dbbd9e6e619bfac93028', '1'),
+    ('journalist2', 'Joel Henry', '$2y$12$BinSqdyIv9yeXaMaPaz.ie8rg5OIBpNUlmflnxOjSa6LQI26VSGq6', '42347a3630447bbdfdf84fba601ac6f4', '1'),
+    ('journalist3', 'Skyler Cotton', '$2y$12$TILlYyk0lrUhcpGbOu7r3ep/YsE.sNPHBPWsP2G94XrZTglYWJHdy', '86560e780c0c22593254b2472cbbf2c1', '1'),
+    ('editor1', 'Dorian Sanders', '$2y$12$scdRPqBz36IM1x8Y/vECr..o5cB04WLXdY2uqLPd7rUMiR0DjhtfO', '664c642c83100c5c73ff7939d036df0c', '2'),
+    ('editor2', 'Flavia Kaufman', '$2y$12$Q/JY3p5/ENhJyuVlWqabOet4uH5I6gxLCQD0R2gP7QsY99Gl5XvPG', '27b96cd1dba15fa1fa05a0d28aa7c889', '2'),
+    ('editor3', 'Rudyard Burns', '$2y$12$5.bpY0sTBd77fZylv989T.Jy8sYWWIFKrd4E3hZz4bnTfuS6fRgaG', 'dd8c314eb121b007c50039fd831f0536', '2');
+
 
 -- Insert data into the news table
 INSERT INTO news (news_title, news_subtitle, body, author_id)
