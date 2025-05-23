@@ -8,22 +8,29 @@ if (count($currNewsList) < 1) {
 <?php require VIEWS . "news_amount.php" ?>
 
 <?php foreach ($currNewsList as $news): ?>
-    <div class='news--card'>
-        <h2>
-            <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
-                <?= htmlspecialchars($news["news_title"]) ?>
-            </a>
-        </h2>
-        <p><?= htmlspecialchars($news["news_subtitle"]) ?></p>
+    <div class='news--card-container'>
+        <div class="news--card">
+            <div class="news--image-container">
+                <img class="news--image" src="/../icon.jpg" />
+            </div>
+            <div class="news--details-container">
+                <h2 class="news--details-title">
+                    <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
+                        <?= htmlspecialchars($news["news_title"]) ?>
+                    </a>
+                </h2>
+                <p class="news--details-subtitle"><?= htmlspecialchars($news["news_subtitle"]) ?></p>
 
-        <div class="news--author-time">
-            <p>By: <?= htmlspecialchars($news["author"]) ?></p>
-            <p><?php require VIEWS . "time_ago_display.php" ?></p>
+                <p class="news--author-time">
+                    <?= htmlspecialchars($news["author"]) ?>
+                    <span style="margin: 0 0.3rem;">|</span>
+                    <?php require VIEWS . "time_ago_display.php" ?>
+                </p>
+
+                <?php $newsDetails = $news ?>
+                <?php require VIEWS . "category_display.php" ?>
+            </div>
         </div>
-
-        <?php $newsDetails = $news ?>
-        <?php require VIEWS . "category_display.php" ?>
-
     </div>
     <hr>
 <?php endforeach; ?>

@@ -14,8 +14,8 @@ if (!$newsDetails) {
 ?>
 
 <h1 class="news-title"><?php echo htmlspecialchars($newsDetails['news_title']); ?></h1>
-<p>By: <?php echo htmlspecialchars($newsDetails['author']); ?></p>
-<div class="created-edited-time">
+<p class="news-author-time">
+    <?php echo htmlspecialchars($newsDetails['author']); ?>
     <?php
     $created = new DateTime($newsDetails["created_date"]);
     $edited = new DateTime($newsDetails["edited_date"]);
@@ -23,13 +23,14 @@ if (!$newsDetails) {
     $createdDiff = $created->diff($now);
     $editedDiff = $edited->diff($now);
 
+    echo "<span style='margin: 0 0.3rem;'>|</span>";
+
     $news = $newsDetails;
-    echo "<p>";
     require VIEWS . "time_ago_display.php";
-    echo "</p>";
 
     if ($created != $edited) {
-        echo "<p>Edited last ";
+        echo "<span style='margin: 0 0.3rem;'>|</span>";
+        echo "Edited last ";
         if ($editedDiff->y > 0) {
             echo htmlspecialchars($editedDiff->y . " year" . add_S($editedDiff->y) . " ago");
         } else if ($editedDiff->m > 0) {
@@ -43,13 +44,15 @@ if (!$newsDetails) {
         } else if ($editedDiff->s > 0) {
             echo htmlspecialchars($editedDiff->s . " second" . add_S($editedDiff->s) . " ago");
         }
-        echo "</p>";
     }
 
     ?>
-</div>
+<p>
 
 <p class="news-subtitle"><?php echo htmlspecialchars($newsDetails['news_subtitle']); ?></p>
+
+<img class="news-image" src="/../icon.jpg" />
+
 <p class="body"><?php echo nl2br(htmlspecialchars($newsDetails['body'])); ?></p>
 
 <?php require VIEWS . "category_display.php" ?>

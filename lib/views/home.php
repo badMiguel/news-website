@@ -6,14 +6,16 @@
             <div class="top-news--container">
                 <h3>Just In</h3>
                 <div class="top-news--card">
-                    <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>"><?= htmlspecialchars($latestNews["news_title"]) ?></a></h1>
+                    <img class="top-news--image" src="/../icon.jpg" />
                     <div class="top-news--details">
+                        <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>"><?= htmlspecialchars($latestNews["news_title"]) ?></a></h1>
                         <p class="top-news--subtitle"><?= htmlspecialchars($latestNews["news_subtitle"]) ?></p>
-                        <div class="top-news--author-time">
-                            <p class="top-news--author">By: <?= htmlspecialchars($latestNews["author"]) ?></p>
+                        <p class="top-news--author-time">
+                            <?= htmlspecialchars($latestNews["author"]) ?>
+                            <span style="margin: 0 0.3rem;">|</span>
                             <?php $news = $latestNews ?>
-                            <p class="top-news--time"><?php require VIEWS . "time_ago_display.php" ?></p>
-                        </div>
+                            <?php require VIEWS . "time_ago_display.php" ?>
+                        </p>
 
                         <?php $newsDetails = $latestNews ?>
                         <?php require VIEWS . "category_display.php" ?>
@@ -34,30 +36,33 @@
             style="background-color: #dadce8;"
             <?php endif ?>>
             <div class="main--spacing">
+                <h1 class="category-title">
+                    <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
+                        <?= htmlspecialchars($newsListKey) ?>
+                    </a>
+                </h1>
                 <div class="news-category--card-container">
-                    <h1 class="category-title">
-                        <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
-                            <?= htmlspecialchars($newsListKey) ?>
-                        </a>
-                    </h1>
                     <?php foreach ($newsList as $news): ?>
                         <div class="news-category--card">
+                            <img class="" src="/../icon.jpg" />
                             <h2 class="home-news--title">
                                 <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
                                     <?= htmlspecialchars($news["news_title"]) ?>
                                 </a>
                             </h2>
-                            <p class="home-news--subtitle"><?= htmlspecialchars($news["news_subtitle"]) ?></p>
-                            <p class="home-news--author">By: <?= htmlspecialchars($news["author"]) ?></p>
-                            <p class="home-news--time"><?php require VIEWS . "time_ago_display.php" ?></p>
+                            <p class="home-news--time-author">
+                                <?php require VIEWS . "time_ago_display.php" ?>
+                                <span style="margin: 0 0.3rem;">|</span>
+                                <?= htmlspecialchars($news["author"]) ?>
+                            </p>
                         </div>
                     <?php endforeach; ?>
-                    <p class="home-news--view-more">
-                        <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
-                            View More
-                        </a>
-                    </p>
                 </div>
+                <p class="home-news--view-more">
+                    <a href="/<?= htmlspecialchars(lcfirst($newsListKey)) ?>">
+                        View More
+                    </a>
+                </p>
             </div>
         </div>
         <?php $counter++ ?>

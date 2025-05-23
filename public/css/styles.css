@@ -57,7 +57,7 @@ a {
 
 .nav--alignment {
     width: 80%;
-    max-width: 45rem;
+    max-width: 50rem;
     justify-self: center;
     justify-items: space-between;
 }
@@ -76,7 +76,7 @@ a {
 
 .main--spacing {
     width: 80%;
-    max-width: 45rem;
+    max-width: 50rem;
 }
 
 .home--container {
@@ -110,42 +110,75 @@ a {
     margin: 1rem 0 0 0;
 }
 
-.top-news--title {
+.top-news--image {
     width: 35%;
-    text-align: left;
+    object-fit: cover;
 }
 
 .top-news--details {
     width: 60%;
 }
 
-.top-news--author-time {
-    display: flex;
-    justify-content: space-between;
-    margin: 2rem 0 1rem 0;
+.top-news--title {
+    text-align: left;
+    margin: 1rem 0;
 }
 
-.news--card {
+.top-news--author-time {
+    margin: 1rem 0 1rem 0;
+    font-weight: 300;
+    font-size: 0.9rem;
+}
+
+.news--card-container {
     display: flex;
     flex-direction: column;
     margin: 3rem 0;
     gap: 0.5rem;
 }
 
-.news--author-time {
+.news--card {
     display: flex;
     justify-content: space-between;
+}
+
+.news--image-container {
+    width: 20%;
+}
+
+.news--details-container {
+    width: 75%;
+}
+
+.news--details-title {
+    margin: 0 0 1rem 0;
+}
+
+.news--details-subtitle {
+    margin: 0 0 1rem 0;
+}
+
+.news--image {
+    object-fit: cover;
+    width: 100%;
+}
+
+.news--author-time {
+    font-weight: 300;
+    font-size: 0.8rem;
 }
 
 .news-category--container {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin: 1rem 0;
+    padding: 4rem 0;
 }
 
 .news-category--card-container {
-    margin: 1rem 0;
-    padding: 4rem 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 .news-category--card {
@@ -153,6 +186,7 @@ a {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    width: 30%;
 }
 
 .news-amount--container {
@@ -188,6 +222,23 @@ a {
     margin: 0 0 2rem 0;
 }
 
+.news-author-time {
+    font-weight: 300;
+    font-size: 0.9rem;
+    margin:1rem 0;
+}
+
+.news-subtitle { 
+    margin: 2rem 0;
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+.news-image {
+    width: 100%;
+    margin: 1rem 0 2rem 0 ;
+}
+
 .created-edited-time {
     margin: 1rem 0;
 }
@@ -200,4 +251,10 @@ a {
 
 .home-news--view-more {
     text-align: center;
+}
+
+.home-news--time-author {
+    font-weight: 300;
+    font-size: 0.8rem;
+    margin: 0.5rem 0 0 0;
 }
