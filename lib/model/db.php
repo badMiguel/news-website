@@ -251,12 +251,18 @@ class Model
 
     private function deleteImage(string $imagePath, int $newsId): ?string
     {
-        if ($this->imageUsedByOthers($imagePath, $newsId)) {
+        $isUsed =  $this->imageUsedByOthers($imagePath, $newsId);
+        if (!$isUsed[0]) {
+            return "Error checking if image used by others: " . $isUsed[1];
+        }
+
+        if ($isUsed[1]) {
             return null;
         }
 
         $fullPath = IMAGE_DIR . $imagePath;
-        if (file_exists($fullPath) && !unlink($fullPath)) {
+        error_log($fullPath);
+        if (!file_exists($fullPath) || !unlink($fullPath)) {
             return "Error deleting image";
         }
         return null;
@@ -382,6 +388,11 @@ class Model
                 $uploadHasError = $this->uploadImage($newImagePath);
                 if ($uploadHasError) {
                     throw new Exception("Failed to upload image: " . $uploadHasError);
+                }
+
+                $deleteHasError = $this->deleteImage($getOldImagePath[1], $newsId);
+                if ($deleteHasError) {
+                    throw new Exception("Failed to delete old image" . $deleteHasError);
                 }
             }
 

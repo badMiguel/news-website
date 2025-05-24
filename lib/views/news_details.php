@@ -7,7 +7,8 @@ function add_S(int $time): string
     return "";
 };
 
-if (!$newsDetails) {
+
+if (!isset($newsDetails["news_id"])) {
     echo "<p>Sorry news does not exist</p>";
     exit;
 }
