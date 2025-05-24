@@ -14,7 +14,15 @@
                             <img class="top-news--image" src="/../images/<?= htmlspecialchars($latestNews["image_path"]) ?>" />
                         </a>
                     <?php endif ?>
-                    <div class="top-news--details">
+                    <div class="top-news--details"
+                        <?php if (
+                            htmlspecialchars($latestNews["image_path"]) &&
+                            file_exists(IMAGE_DIR . $latestNews["image_path"])
+                        ): ?>
+                        style="width: 60%;"
+                        <?php else: ?>
+                        style="width: 100%;"
+                        <?php endif ?>>
                         <h1 class="top-news--title">
                             <a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>">
                                 <?= htmlspecialchars($latestNews["news_title"]) ?>
@@ -69,11 +77,13 @@
                                 </a>
                             </h2>
 
-                            <!--  TODO CHECK IF IMAGE IN PATH EXISTS TOO -->
-
-                            <?php if (!htmlspecialchars($news["image_path"])): ?>
+                            <?php if (
+                                !htmlspecialchars($news["image_path"]) ||
+                                !file_exists(IMAGE_DIR . $news["image_path"])
+                            ): ?>
                                 <p><?= htmlspecialchars($news["news_subtitle"]) ?></p>
                             <?php endif ?>
+
                             <p class="home-news--time-author">
                                 <?php require VIEWS . "time_ago_display.php" ?>
                                 <span style="margin: 0 0.3rem;">|</span>
