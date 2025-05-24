@@ -12,11 +12,23 @@ if (isset($_SESSION['newsEditStatus'])) {
 session_write_close();
 ?>
 
-<form method="POST" action="/news/edit/submit">
+<form method="POST" action="/news/edit/submit" enctype="multipart/form-data">
     <input type="hidden" name="news_id" value="<?php echo htmlspecialchars($newsDetails[0]['news_id']); ?>">
-    <label>Title: <input type="text" name="news_title" value="<?php echo htmlspecialchars($newsDetails[0]['news_title']); ?>" required></label><br>
-    <label>Summary: <textarea name="news_subtitle" required><?php echo htmlspecialchars($newsDetails[0]['news_subtitle']); ?></textarea></label><br>
-    <label>Body: <textarea name="body" required><?php echo htmlspecialchars($newsDetails[0]['body']); ?></textarea></label><br>
+
+    <label for="news_title">Title: </label>
+    <input type="text" name="news_title" value="<?php echo htmlspecialchars($newsDetails[0]['news_title']); ?>" required>
+
+    <label for="news_subtitle">Summary: </label>
+    <textarea name="news_subtitle" required><?php echo htmlspecialchars($newsDetails[0]['news_subtitle']); ?></textarea>
+
+    <label for="body">Body: </label>
+    <textarea name="body" required><?php echo htmlspecialchars($newsDetails[0]['body']); ?></textarea>
+
+    <?php if (htmlspecialchars($newsDetails[0]["image_path"])): ?>
+        <img src="/../images/<?= htmlspecialchars($newsDetails[0]['image_path']) ?>" />
+    <?php endif ?>
+    <label for="image">Select Image:</label>
+    <input type="file" name="image" accept="image/*" />
 
     <p>Category:</p>
     <?php foreach ($categoryList as $c): ?>

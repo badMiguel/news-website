@@ -191,6 +191,40 @@ class Model
         }
     }
 
+    private function uploadImage(): ?string
+    {
+        $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        $targetPath = IMAGE_DIR . basename($_FILES["image"]["name"]);
+
+        // // TODO - remove
+        // error_log($targetPath);
+        // foreach ($_FILES["image"] as $k => $v) {
+        //     error_log($k . " - " . $v);
+        // }
+
+        // validate file
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        if ($check === false) {
+            return "Uploaded file is not an image";
+        }
+
+        // check image size
+        if ($_FILES["image"]["size"] > 2000000) {
+            return "Image file is too large.";
+        }
+
+        $allowed = ["jpg", "jpeg", "png", "gif"];
+        if (!in_array($imageFileType, $allowed)) {
+            return "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed";
+        }
+
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetPath)) {
+            return null;
+        } else {
+            return "There was an error uploading the image";
+        }
+    }
+
     public function addNewsToDB(
         string $newsTitle,
         string $newsSummary,
@@ -230,9 +264,17 @@ class Model
                 $statement3->execute(["newsId" => $news["news_id"], "categoryId" => $categoryId]);
             }
 
+            if ($imagePath) {
+                $uploadHasError = $this->uploadImage();
+                if ($uploadHasError) {
+                    throw new Error("Failed to upload image: " . $uploadHasError);
+                }
+            }
+
             $this->db->commit();
             return null;
         } catch (PDOException $err) {
+            $this->db->rollBack();
             return $err->getMessage();
         }
     }
@@ -242,14 +284,22 @@ class Model
         string $newsTitle,
         string $newsSummary,
         string $newsBody,
-        array $categoryIdList
-    ): void {
+        array $categoryIdList,
+        string  $imagePath
+    ): ?string {
         try {
             $this->db->beginTransaction();
 
+            $changeImage = $this->imageWillChange($newsId, $imagePath);
+
             $statement1 = $this->db->prepare("
                 UPDATE news 
-                SET news_title = :title, news_subtitle = :summary, body = :body, edited_date = CURRENT_TIMESTAMP
+                SET 
+                    news_title = :title,
+                    news_subtitle = :summary,
+                    body = :body,
+                    edited_date = CURRENT_TIMESTAMP,
+                    image_path = :imagePath
                 WHERE news_id = :newsId
             ");
             $statement1->execute([
@@ -257,6 +307,7 @@ class Model
                 "title" => $newsTitle,
                 "summary" => $newsSummary,
                 "body" => $newsBody,
+                "imagePath" => $imagePath,
             ]);
 
             $statement2 = $this->db->prepare("DELETE FROM news_category WHERE news_id = :newsId");
@@ -269,27 +320,48 @@ class Model
                 $statement3->execute(["newsId" => $newsId, "categoryId" => $category]);
             }
 
-            if (!$this->db->commit()) {
-                throw new Exception("Transaction failed while editing {$_POST["news_id"]}");
+            if ($imagePath && $changeImage) {
+                error_log("tmp" . $_FILES["image"]["tmp_name"]);
+                $uploadHasError = $this->uploadImage();
+                if ($uploadHasError) {
+                    throw new Error("Failed to upload image: " . $uploadHasError);
+                }
             }
+
+            $this->db->commit();
+            return null;
         } catch (PDOException $err) {
-            error_log("Error updating news in DB: " . $err->getMessage());
-            header("HTTP/1.1 500 Internal Server Error");
-            echo "Sorry, something went wrong. News was not updated. Please try again later.";
-            exit();
+            $this->db->rollBack();
+            return "Transaction failed while editing {$newsId}: " . $err->getMessage();
         }
     }
 
-    public function deleteNewsFromDB(int $newsId): void
+    public function deleteNewsFromDB(int $newsId): ?string
     {
         try {
             $statement = $this->db->prepare("DELETE FROM news WHERE news_id = :newsId");
             $statement->execute(["newsId" => $newsId]);
+            return null;
         } catch (PDOException $err) {
-            error_log("Error deleting news from DB: " . $err->getMessage());
-            header("HTTP/1.1 500 Internal Server Error");
-            echo "Sorry, something went wrong. News was not deleted. Please try again later.";
-            exit();
+            return $err->getMessage();
+        }
+    }
+
+    public function imageWillChange(int $id, string $newPath): bool| string
+    {
+        try {
+            $statement = $this->db->prepare("
+                SELECT image_path FROM news WHERE news_id = :newsId
+            ");
+            $statement->execute(["newsId" => $id]);
+            $imagePath = $statement->fetch(PDO::FETCH_ASSOC)["image_path"];
+
+            if ($imagePath === $newPath) {
+                return false;
+            }
+            return true;
+        } catch (PDOException $err) {
+            return $err->getMessage();
         }
     }
 

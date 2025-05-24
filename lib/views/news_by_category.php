@@ -10,9 +10,11 @@ if (count($currNewsList) < 1) {
 <?php foreach ($currNewsList as $news): ?>
     <div class='news--card-container'>
         <div class="news--card">
-            <div class="news--image-container">
-                <img class="news--image" src="/../images/<?= htmlspecialchars($news["image_path"]) ?>" />
-            </div>
+            <?php if (htmlspecialchars($news["image_path"])): ?>
+                <div class="news--image-container">
+                    <img class="news--image" src="/../images/<?= htmlspecialchars($news["image_path"]) ?>" />
+                </div>
+            <?php endif ?>
             <div class="news--details-container">
                 <h2 class="news--details-title">
                     <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">

@@ -110,8 +110,12 @@ a {
     margin: 1rem 0 0 0;
 }
 
-.top-news--image {
+.top-news--image-link {
     width: 35%;
+}
+
+.top-news--image {
+    width: 100%;
     object-fit: cover;
 }
 
@@ -225,10 +229,10 @@ a {
 .news-author-time {
     font-weight: 300;
     font-size: 0.9rem;
-    margin:1rem 0;
+    margin: 1rem 0;
 }
 
-.news-subtitle { 
+.news-subtitle {
     margin: 2rem 0;
     font-size: 1.2rem;
     font-style: italic;
@@ -236,7 +240,7 @@ a {
 
 .news-image {
     width: 100%;
-    margin: 1rem 0 2rem 0 ;
+    margin: 1rem 0 2rem 0;
 }
 
 .created-edited-time {

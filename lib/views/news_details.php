@@ -15,15 +15,12 @@ if (!$newsDetails) {
 
 <h1 class="news-title"><?php echo htmlspecialchars($newsDetails['news_title']); ?></h1>
 <p class="news-author-time">
-    <?php echo htmlspecialchars($newsDetails['author']); ?>
     <?php
     $created = new DateTime($newsDetails["created_date"]);
     $edited = new DateTime($newsDetails["edited_date"]);
     $now = new DateTime();
     $createdDiff = $created->diff($now);
     $editedDiff = $edited->diff($now);
-
-    echo "<span style='margin: 0 0.3rem;'>|</span>";
 
     $news = $newsDetails;
     require VIEWS . "time_ago_display.php";
@@ -45,13 +42,17 @@ if (!$newsDetails) {
             echo htmlspecialchars($editedDiff->s . " second" . add_S($editedDiff->s) . " ago");
         }
     }
-
     ?>
+
+    <span style='margin: 0 0.3rem;'>|</span>
+    <?php echo htmlspecialchars($newsDetails['author']); ?>
 <p>
 
 <p class="news-subtitle"><?php echo htmlspecialchars($newsDetails['news_subtitle']); ?></p>
 
-<img class="news-image" src="/../images/<?= htmlspecialchars($newsDetails["image_path"]) ?>" />
+<?php if (htmlspecialchars($newsDetails["image_path"])): ?>
+    <img class="news-image" src="/../images/<?= htmlspecialchars($newsDetails["image_path"]) ?>" />
+<?php endif ?>
 
 <p class="body"><?php echo nl2br(htmlspecialchars($newsDetails['body'])); ?></p>
 

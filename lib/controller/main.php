@@ -162,20 +162,6 @@ class Application
         session_write_close();
     }
 
-    public function uploadImage()
-    {
-        $uploadOk = 1;
-
-        // validate file
-        $imgSize = getimagesize($_FILES["image"]["tmp_name"]);
-        if ($imgSize !== false) {
-        } else {
-        }
-
-        if ($uploadOk) {
-        }
-    }
-
     public function createNews(): void
     {
         $this->checkPrivilege(JOURNALIST);
@@ -224,46 +210,40 @@ class Application
             exit();
         }
 
-        try {
+        $newsTitle = $_POST["news_title"];
+        $newsSummary = $_POST["news_subtitle"];
+        $newsBody = $_POST["body"];
+        $categoryIdList = $_POST["category"];
+        $imagePath = $_FILES["image"]["name"];
 
-            $newsTitle = $_POST["news_title"];
-            $newsSummary = $_POST["news_subtitle"];
-            $newsBody = $_POST["body"];
-            $categoryIdList = $_POST["category"];
-            $imagePath = $_POST["image"]["name"];
-            $imageTempName = $_POST["image"]["tmp_name"];
+        $addHasError = $this->model->addNewsToDB(
+            newsTitle: $newsTitle,
+            newsSummary: $newsSummary,
+            newsBody: $newsBody,
+            categoryIdList: $categoryIdList,
+            imagePath: $imagePath,
+        );
 
-            $addHasError = $this->model->addNewsToDB(
-                newsTitle: $newsTitle,
-                newsSummary: $newsSummary,
-                newsBody: $newsBody,
-                categoryIdList: $categoryIdList,
-                imagePath: $imagePath,
-            );
-
-            if ($addHasError) {
-                throw new Exception($addHasError);
-            }
-
-
-
+        // success
+        if (!$addHasError) {
             session_start();
             $_SESSION["newsCreateStatus"] = true;
             session_write_close();
 
             header("Location: /news/create");
-            exit();
-        } catch (Exception $e) {
-            session_start();
-            $_SESSION["newsCreateStatus"] = false;
-            $_SESSION["newsCreateError"] = $e->getMessage();
-            session_write_close();
-
-            header("Location: /news/create");
-            error_log($e->getMessage());
-            echo "Sorry, something went wrong. News was not created. Please try again later.";
-            exit();
+            exit;
         }
+
+        // fail
+        session_start();
+        $_SESSION["newsCreateStatus"] = false;
+        $_SESSION["newsCreateError"] = $addHasError;
+        session_write_close();
+
+        header("Location: /news/create");
+        error_log($addHasError);
+        echo "Sorry, something went wrong. News was not created. Please try again later.";
+        exit;
     }
 
     public function editNews(): void
@@ -280,6 +260,8 @@ class Application
         ];
         $this->render("edit_news", $data);
     }
+
+    private function editError(string $err): void {}
 
     public function editNewsSubmit(): void
     {
@@ -305,21 +287,32 @@ class Application
         $newsSummary = $_POST["news_subtitle"];
         $newsBody = $_POST["body"];
         $categoryIdList = $_POST["category"];
+        $imagePath = $_FILES["image"]["name"];
 
-        $this->model->updateNewsInDB(
+        $updateHasError = $this->model->updateNewsInDB(
             newsId: $newsId,
             newsTitle: $newsTitle,
             newsSummary: $newsSummary,
             newsBody: $newsBody,
-            categoryIdList: $categoryIdList
+            categoryIdList: $categoryIdList,
+            imagePath: $imagePath,
         );
 
-        session_start();
-        $_SESSION["newsEditStatus"] = true;
-        session_write_close();
+        // success
+        if (!$updateHasError) {
+            session_start();
+            $_SESSION["newsEditStatus"] = true;
+            session_write_close();
 
-        header("Location: /news/edit?id=" . $_POST["news_id"]);
-        exit();
+            header("Location: /news/edit?id=" . $_POST["news_id"]);
+            exit;
+        }
+
+        // fail
+        error_log("Error updating news in DB: " . $updateHasError);
+        header("HTTP/1.1 500 Internal Server Error");
+        echo "Sorry, something went wrong. News was not updated. Please try again later.";
+        exit;
     }
 
     public function deleteNews(): void
@@ -327,7 +320,14 @@ class Application
         $this->checkPrivilege(EDITOR);
 
         $newsId = (int) $_GET["id"];
-        $this->model->deleteNewsFromDB($newsId);
+        $deleteStatus = $this->model->deleteNewsFromDB($newsId);
+
+        if ($deleteStatus) {
+            error_log("Error deleting news from DB: " . $deleteStatus);
+            header("HTTP/1.1 500 Internal Server Error");
+            echo "Sorry, something went wrong. News was not deleted. Please try again later.";
+            exit();
+        }
 
         header("Location: /");
         exit();
