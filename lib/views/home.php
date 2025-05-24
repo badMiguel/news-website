@@ -6,13 +6,20 @@
             <div class="top-news--container">
                 <h3>Just In</h3>
                 <div class="top-news--card">
-                    <?php if (htmlspecialchars($latestNews["image_path"])): ?>
+                    <?php if (
+                        htmlspecialchars($latestNews["image_path"]) &&
+                        file_exists(IMAGE_DIR . $latestNews["image_path"])
+                    ): ?>
                         <a class="top-news--image-link" href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>">
                             <img class="top-news--image" src="/../images/<?= htmlspecialchars($latestNews["image_path"]) ?>" />
                         </a>
                     <?php endif ?>
                     <div class="top-news--details">
-                        <h1 class="top-news--title"><a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>"><?= htmlspecialchars($latestNews["news_title"]) ?></a></h1>
+                        <h1 class="top-news--title">
+                            <a href="/news?id=<?= htmlspecialchars($latestNews["news_id"]) ?>">
+                                <?= htmlspecialchars($latestNews["news_title"]) ?>
+                            </a>
+                        </h1>
                         <p class="top-news--subtitle"><?= htmlspecialchars($latestNews["news_subtitle"]) ?></p>
                         <p class="top-news--author-time">
                             <?php $news = $latestNews ?>
@@ -48,7 +55,10 @@
                 <div class="news-category--card-container">
                     <?php foreach ($newsList as $news): ?>
                         <div class="news-category--card">
-                            <?php if (htmlspecialchars($news["image_path"])): ?>
+                            <?php if (
+                                htmlspecialchars($news["image_path"]) &&
+                                file_exists(IMAGE_DIR . $news["image_path"])
+                            ): ?>
                                 <a href="/news?id=<?= htmlspecialchars($news["news_id"]) ?>">
                                     <img style="width: 100%;" src="/../images/<?= htmlspecialchars($news["image_path"]) ?>" />
                                 </a>

@@ -29,7 +29,6 @@ class Application
         require_once VIEWS . "layout.php";
     }
 
-
     public function index(): void
     {
         /* i forgot why i added this but currently causing issue so commenting out 
@@ -261,8 +260,6 @@ class Application
         $this->render("edit_news", $data);
     }
 
-    private function editError(string $err): void {}
-
     public function editNewsSubmit(): void
     {
         $this->checkPrivilege(EDITOR);
@@ -321,16 +318,15 @@ class Application
 
         $newsId = (int) $_GET["id"];
         $deleteStatus = $this->model->deleteNewsFromDB($newsId);
-
         if ($deleteStatus) {
             error_log("Error deleting news from DB: " . $deleteStatus);
             header("HTTP/1.1 500 Internal Server Error");
             echo "Sorry, something went wrong. News was not deleted. Please try again later.";
-            exit();
+            exit;
         }
 
         header("Location: /");
-        exit();
+        exit;
     }
 
     public function addComment(): void
@@ -541,3 +537,4 @@ class Application
         $this->render("404", []);
     }
 }
+

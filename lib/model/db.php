@@ -1,5 +1,7 @@
 <?php
 
+use parallel\Runtime\Error;
+
 class Model
 {
     private PDO $db;
@@ -225,6 +227,15 @@ class Model
         }
     }
 
+    private function deleteImage(string $imagePath): ?string
+    {
+        $fullPath = IMAGE_DIR . $imagePath;
+        if (file_exists($fullPath) && !unlink($fullPath)) {
+            return "Error deleting image";
+        }
+        return null;
+    }
+
     public function addNewsToDB(
         string $newsTitle,
         string $newsSummary,
@@ -267,7 +278,7 @@ class Model
             if ($imagePath) {
                 $uploadHasError = $this->uploadImage();
                 if ($uploadHasError) {
-                    throw new Error("Failed to upload image: " . $uploadHasError);
+                    throw new Exception("Failed to upload image: " . $uploadHasError);
                 }
             }
 
@@ -290,7 +301,10 @@ class Model
         try {
             $this->db->beginTransaction();
 
-            $changeImage = $this->imageWillChange($newsId, $imagePath);
+            $getOldImagePath = $this->getImagePath($newsId);
+            if (!$getOldImagePath[0]) {
+                throw new Exception("Failed to check news' image path: " . $getOldImagePath[1]);
+            }
 
             $statement1 = $this->db->prepare("
                 UPDATE news 
@@ -320,11 +334,11 @@ class Model
                 $statement3->execute(["newsId" => $newsId, "categoryId" => $category]);
             }
 
-            if ($imagePath && $changeImage) {
+            if ($imagePath && $getOldImagePath[1] !== $imagePath) {
                 error_log("tmp" . $_FILES["image"]["tmp_name"]);
                 $uploadHasError = $this->uploadImage();
                 if ($uploadHasError) {
-                    throw new Error("Failed to upload image: " . $uploadHasError);
+                    throw new Exception("Failed to upload image: " . $uploadHasError);
                 }
             }
 
@@ -339,15 +353,30 @@ class Model
     public function deleteNewsFromDB(int $newsId): ?string
     {
         try {
+            $this->db->beginTransaction();
+
+            $imagePath = $this->getImagePath($newsId);
+            if (!$imagePath[0]) {
+                throw new Exception("Failed to get image path: " . $imagePath[1]);
+            }
+
             $statement = $this->db->prepare("DELETE FROM news WHERE news_id = :newsId");
             $statement->execute(["newsId" => $newsId]);
+
+            $deleteImgStatus = $this->deleteImage($imagePath[1]);
+            if ($deleteImgStatus) {
+                throw new Exception("Failed to delete image: " . $deleteImgStatus);
+            }
+
+            $this->db->commit();
             return null;
         } catch (PDOException $err) {
+            $this->db->rollBack();
             return $err->getMessage();
         }
     }
 
-    public function imageWillChange(int $id, string $newPath): bool| string
+    public function getImagePath(int $id): array
     {
         try {
             $statement = $this->db->prepare("
@@ -355,13 +384,9 @@ class Model
             ");
             $statement->execute(["newsId" => $id]);
             $imagePath = $statement->fetch(PDO::FETCH_ASSOC)["image_path"];
-
-            if ($imagePath === $newPath) {
-                return false;
-            }
-            return true;
+            return [true, $imagePath];
         } catch (PDOException $err) {
-            return $err->getMessage();
+            return [false, $err->getMessage()];
         }
     }
 

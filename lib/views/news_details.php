@@ -50,7 +50,10 @@ if (!$newsDetails) {
 
 <p class="news-subtitle"><?php echo htmlspecialchars($newsDetails['news_subtitle']); ?></p>
 
-<?php if (htmlspecialchars($newsDetails["image_path"])): ?>
+<?php if (
+    htmlspecialchars($newsDetails["image_path"]) &&
+    file_exists(IMAGE_DIR . $newsDetails["image_path"])
+): ?>
     <img class="news-image" src="/../images/<?= htmlspecialchars($newsDetails["image_path"]) ?>" />
 <?php endif ?>
 
