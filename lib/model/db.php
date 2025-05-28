@@ -196,12 +196,6 @@ class Model
     {
         $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
 
-        // // TODO - remove
-        // error_log($targetPath);
-        // foreach ($_FILES["image"] as $k => $v) {
-        //     error_log($k . " - " . $v);
-        // }
-
         // validate file
         $check = getimagesize($_FILES["image"]["tmp_name"]);
         if ($check === false) {

@@ -6,12 +6,14 @@ class Application
 {
     private Model $model;
     private Paginator $paginator;
+    private CSRF $csrf;
     private array $currNewsList;
 
-    public function __construct(Model $model, Paginator $paginator)
+    public function __construct(Model $model, Paginator $paginator, CSRF $csrf)
     {
         $this->model = $model;
         $this->paginator = $paginator;
+        $this->csrf = $csrf;
         $this->currNewsList = [];
     }
 
