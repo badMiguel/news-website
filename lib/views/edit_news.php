@@ -1,6 +1,9 @@
 <h2>Edit News</h2>
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 if (isset($_SESSION['newsEditStatus'])) {
     if ($_SESSION['newsEditStatus']) {
         echo "<p style='color: green;'>News updated successfully!</p>";
@@ -9,7 +12,6 @@ if (isset($_SESSION['newsEditStatus'])) {
     }
     unset($_SESSION['newsEditStatus']);
 }
-session_write_close();
 ?>
 
 <form class="crud-form" method="POST" action="/news/edit/submit" enctype="multipart/form-data">

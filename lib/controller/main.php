@@ -93,6 +93,9 @@ class Application
         $newsDetails = $this->model->getNewsDetails((int) $_GET["id"]);
         $newsDetails[0]['comments'] = $newsDetails['comments'];
 
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         $data = [
             "title" => $newsDetails[0]["news_title"],
             "newsDetails" => $newsDetails[0],
@@ -103,6 +106,10 @@ class Application
 
     public function login(): void
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $csrfName = "login";
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -165,11 +172,9 @@ class Application
 
         if ($user && password_verify($password . $user['salt'], $user['hashed_password'])) {
             // login
-            session_start();
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['user_name'];
             $_SESSION['privilege'] = $user['privilege'];
-            session_write_close();
 
             header('Location: /');
             exit;
@@ -188,7 +193,10 @@ class Application
 
     public function logout(): void
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         session_destroy();
         header('Location: /');
         exit;
@@ -196,17 +204,23 @@ class Application
 
     public function checkPrivilege(int $requiredPrivilege): void
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         if (!isset($_SESSION['privilege']) || $_SESSION['privilege'] < $requiredPrivilege) {
             // session_write_close();
             header('Location: /login');
             exit;
         }
-        session_write_close();
     }
 
     public function createNews(): void
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $this->checkPrivilege(JOURNALIST);
         $categoryList = $this->model->getCategoryList();
 
@@ -224,13 +238,15 @@ class Application
 
     public function createNewsSubmit(): void
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $this->checkPrivilege(JOURNALIST);
 
         if (!isset($_POST["csrf_name"], $_POST["csrf_token"])) {
-            session_start();
             $_SESSION["newsCreateStatus"] = false;
             $_SESSION["newsCreateError"] = "No CSRF token found.";
-            session_write_close();
 
             header("Location: /news/create");
             exit();
@@ -240,10 +256,8 @@ class Application
         $csrfToken = $_POST["csrf_token"];
 
         if (!$this->csrf->verifyCSRF(name: $csrfName, clientToken: $csrfToken)) {
-            session_start();
             $_SESSION["newsCreateStatus"] = false;
             $_SESSION["newsCreateError"] = "Invalid CSRF token.";
-            session_write_close();
 
             header("Location: /news/create");
             exit();
@@ -255,9 +269,7 @@ class Application
             !isset($_POST["body"]) || $_POST["body"] === "" ||
             !isset($_POST["category"]) || $_POST["category"] === []
         ) {
-            session_start();
             $_SESSION["newsCreateStatus"] = false;
-            session_write_close();
 
             header("Location: /news/create");
             exit();
@@ -277,19 +289,15 @@ class Application
 
         // success
         if (!$addHasError) {
-            session_start();
             $_SESSION["newsCreateStatus"] = true;
-            session_write_close();
 
             header("Location: /news/create");
             exit;
         }
 
         // fail
-        session_start();
         $_SESSION["newsCreateStatus"] = false;
         $_SESSION["newsCreateError"] = $addHasError;
-        session_write_close();
 
         header("Location: /news/create");
         error_log($addHasError);
@@ -319,12 +327,14 @@ class Application
 
     public function editNewsSubmit(): void
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $this->checkPrivilege(EDITOR);
 
         if (!isset($_POST["csrf_name"], $_POST["csrf_token"])) {
-            session_start();
             $_SESSION["newsEditStatus"] = false;
-            session_write_close();
 
             header("Location: /news/edit?id=" . $_POST["news_id"]);
             exit;
@@ -334,9 +344,7 @@ class Application
         $csrfToken = $_POST["csrf_token"];
 
         if (!$this->csrf->verifyCSRF(name: $csrfName, clientToken: $csrfToken)) {
-            session_start();
             $_SESSION["newsEditStatus"] = false;
-            session_write_close();
 
             header("Location: /news/edit?id=" . $_POST["news_id"]);
             exit;
@@ -349,9 +357,7 @@ class Application
             !isset($_POST["body"]) || $_POST["body"] === "" ||
             !isset($_POST["category"]) || $_POST["category"] === []
         ) {
-            session_start();
             $_SESSION["newsEditStatus"] = false;
-            session_write_close();
 
             header("Location: /news/edit?id=" . $_POST["news_id"]);
             exit();
@@ -373,9 +379,7 @@ class Application
 
         // success
         if (!$updateHasError) {
-            session_start();
             $_SESSION["newsEditStatus"] = true;
-            session_write_close();
 
             header("Location: /news/edit?id=" . $_POST["news_id"]);
             exit;
@@ -407,7 +411,9 @@ class Application
 
     public function addComment(): void
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
         if (!isset($_SESSION['user_id'])) {
             session_write_close();

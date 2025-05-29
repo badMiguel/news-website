@@ -19,7 +19,10 @@
             <h1 class="website-title"><a href="/">Austro-Asian Times</a></h1>
             <div class="login--container">
                 <?php
-                session_start();
+                if (session_status() !== PHP_SESSION_ACTIVE) {
+                    session_start();
+                }
+
                 if (isset($_SESSION['username'])) {
                     if ($_SESSION['privilege'] === EDITOR) {
                         echo "<p><a href='/admin'>Admin</a></p>";
@@ -31,7 +34,6 @@
                 } else {
                     echo "<p><a href='/login'>Login</a></p>";
                 }
-                session_write_close();
                 ?>
             </div>
         </div>

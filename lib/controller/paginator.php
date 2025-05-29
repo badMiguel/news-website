@@ -94,9 +94,11 @@ class Paginator
 
     public function changeAmountToDisplay(int $value): void
     {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
         $_SESSION["amountToDisplay"] = $value;
-        session_write_close();
 
         $this->amountToDisplay = $value;
     }

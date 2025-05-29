@@ -1,14 +1,12 @@
 <h1>Create News</h1>
 
 <?php
-session_start();
 if (isset($_SESSION["newsCreateStatus"]) && $_SESSION["newsCreateStatus"] === false) {
     echo "<p><strong>Error submitting news</strong></p>";
 } else if (isset($_SESSION["newsCreateStatus"]) && $_SESSION["newsCreateStatus"] === true) {
     echo "<p><strong>Successfully Submitted</strong></p>";
 }
 unset($_SESSION["newsCreateStatus"]);
-session_write_close();
 ?>
 
 <form class="crud-form" action="/news/create/submit" method="POST" enctype="multipart/form-data">

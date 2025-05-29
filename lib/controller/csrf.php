@@ -6,12 +6,10 @@ class CSRF
     {
         $csrfToken = bin2hex(random_bytes(32));
 
-        session_start();
         $_SESSION["csrf_{$name}"] = [
             "token" => $csrfToken,
             "time" => time(),
         ];
-        session_write_close();
 
         return $csrfToken;
     }
@@ -20,7 +18,6 @@ class CSRF
     {
         $key = "csrf_{$name}";
 
-        session_start();
         if (!isset($_SESSION[$key])) {
             unset($_SESSION[$key]);
             return false;
@@ -28,7 +25,6 @@ class CSRF
 
         $data = $_SESSION[$key];
         unset($_SESSION[$key]);
-        session_write_close();
 
         $tokenExpiration = 900;
         if (isset($data["time"]) && (time() - $data["time"] > $tokenExpiration)) {
