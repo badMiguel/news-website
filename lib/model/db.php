@@ -275,16 +275,16 @@ class Model
             $this->db->beginTransaction();
 
             $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
-            $counter = 0;
-            do {
-                $newImagePath = bin2hex(random_bytes(16)) . "." . $imageFileType;
-                $counter++;
-                if ($counter === 5) {
-                    throw new Exception("Failed to generate a filename for image");
-                }
-            } while (file_exists(IMAGE_DIR . $newImagePath));
-
-            error_log($newImagePath);
+            if ($imageFileType !== "") {
+                $counter = 0;
+                do {
+                    $newImagePath = bin2hex(random_bytes(16)) . "." . $imageFileType;
+                    $counter++;
+                    if ($counter === 5) {
+                        throw new Exception("Failed to generate a filename for image");
+                    }
+                } while (file_exists(IMAGE_DIR . $newImagePath));
+            }
 
             $statement1 = $this->db->prepare("
                 INSERT INTO news 
@@ -311,9 +311,11 @@ class Model
                 $statement3->execute(["newsId" => $news["news_id"], "categoryId" => $categoryId]);
             }
 
-            $uploadHasError = $this->uploadImage($newImagePath);
-            if ($uploadHasError) {
-                throw new Exception("Failed to upload image: " . $uploadHasError);
+            if ($imageFileType !== "") {
+                $uploadHasError = $this->uploadImage($newImagePath);
+                if ($uploadHasError) {
+                    throw new Exception("Failed to upload image: " . $uploadHasError);
+                }
             }
 
             $this->db->commit();
