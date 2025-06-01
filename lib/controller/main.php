@@ -53,7 +53,10 @@ class Application
 
     public function newsByCategory()
     {
-        $path = ucfirst(str_replace("/", "", $_SERVER["PATH_INFO"]));
+        session_start();
+        $path = ucfirst(str_replace("/", "", $_SESSION["path"]));
+        session_write_close();
+        
         $this->currNewsList = $this->paginator->start($path);
         $totalPages = $this->paginator->getTotalPages();
         $pageInfo = $this->paginator->getPageRange();
