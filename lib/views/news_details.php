@@ -95,6 +95,10 @@ if (!isset($newsDetails["news_id"])) {
 
 
 <h3>Comments</h3>
+<?php if (!$newsDetails['comments_enabled']): ?>
+    <p>Comments are disabled by the author.</p>
+    <?php exit ?>
+<?php endif ?>
 <?php if (empty($newsDetails['comments'])): ?>
     <p>No comments yet.</p>
 <?php else: ?>
